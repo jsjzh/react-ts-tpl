@@ -1,7 +1,4 @@
 import React, { useImperativeHandle, useState } from "react";
-import useSWR from "swr";
-import useSWRImmutable from "swr/immutable";
-import { useImmer } from "use-immer";
 import { Button } from "antd";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 
@@ -46,7 +43,7 @@ const CountdownButton = React.forwardRef<CountdownButtonIRefs, IProps>(
         disabled={isStart}
         onClick={props.onClick}
       >
-        {isStart ? countdown : props.initText || "获取验证码"}
+        {isStart ? countdown : props.initText || "倒计时"}
       </Button>
     );
   },

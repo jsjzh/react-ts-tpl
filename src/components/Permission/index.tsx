@@ -19,7 +19,7 @@ const Permission: React.FC<IProps> = (props) => {
   if (SKIP_AUTHENTICATION || codes.includes(props.code.toLocaleUpperCase())) {
     return props.children;
   } else {
-    return <></>;
+    return null;
   }
 };
 

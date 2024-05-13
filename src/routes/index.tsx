@@ -10,64 +10,64 @@ import {
   GoldOutlined,
 } from "@ant-design/icons";
 
-import LayoutBlank from "@/pages/_layouts/Blank";
-import LayoutContainer from "@/pages/_layouts/Container";
-import LayoutH5Blank from "@/pages/_layouts/H5Blank";
+import LayoutBlank from "@/views/_layouts/Blank";
+import LayoutContainer from "@/views/_layouts/Container";
+import LayoutH5Blank from "@/views/_layouts/H5Blank";
 
-import Login from "@/pages/Login";
-import HomepageHome from "@/pages/homepage/Home";
+import Login from "@/views/Login";
+import HomepageHome from "@/views/homepage/Home";
 
-import BillingInquiriesBillingOverview from "@/pages/billingInquiries/BillingOverview";
-import BillingInquiriesBillingAnalysis from "@/pages/billingInquiries/BillingAnalysis";
-import BillingInquiriesBillingDetails from "@/pages/billingInquiries/BillingDetails";
-import BillingInquiriesCostReduction from "@/pages/billingInquiries/CostReduction";
+import BillingInquiriesBillingOverview from "@/views/billingInquiries/BillingOverview";
+import BillingInquiriesBillingAnalysis from "@/views/billingInquiries/BillingAnalysis";
+import BillingInquiriesBillingDetails from "@/views/billingInquiries/BillingDetails";
+import BillingInquiriesCostReduction from "@/views/billingInquiries/CostReduction";
 
-import CostOptimizationHealthAnalysis from "@/pages/costOptimization/HealthAnalysis";
-import CostOptimizationNewHealthAnalysis from "@/pages/costOptimization/NewHealthAnalysis";
-import CostOptimizationOptimizationProposal from "@/pages/costOptimization/OptimizationProposal";
-import CostOptimizationOptimizationStrategy from "@/pages/costOptimization/OptimizationStrategy";
+import CostOptimizationHealthAnalysis from "@/views/costOptimization/HealthAnalysis";
+import CostOptimizationNewHealthAnalysis from "@/views/costOptimization/NewHealthAnalysis";
+import CostOptimizationOptimizationProposal from "@/views/costOptimization/OptimizationProposal";
+import CostOptimizationOptimizationStrategy from "@/views/costOptimization/OptimizationStrategy";
 
-import BillingManagementCustomExpenseManagement from "@/pages/billingManagement/CustomExpenseManagement";
-import BillingManagementAllocationRuleManagement from "@/pages/billingManagement/AllocationRuleManagement";
-import BillingManagementBudgetManagement from "@/pages/billingManagement/BudgetManagement";
-import BillingManagementBillPush from "@/pages/billingManagement/BillPush";
+import BillingManagementCustomExpenseManagement from "@/views/billingManagement/CustomExpenseManagement";
+import BillingManagementAllocationRuleManagement from "@/views/billingManagement/AllocationRuleManagement";
+import BillingManagementBudgetManagement from "@/views/billingManagement/BudgetManagement";
+import BillingManagementBillPush from "@/views/billingManagement/BillPush";
 
-import ResourceManagementHierarchicalManagement from "@/pages/resourceManagement/HierarchicalManagement";
-import ResourceManagementApplicationManagement from "@/pages/resourceManagement/ApplicationManagement";
-import ResourceManagementResourceList from "@/pages/resourceManagement/ResourceList";
-import ResourceManagementClusterManagement from "@/pages/resourceManagement/ClusterManagement";
+import ResourceManagementHierarchicalManagement from "@/views/resourceManagement/HierarchicalManagement";
+import ResourceManagementApplicationManagement from "@/views/resourceManagement/ApplicationManagement";
+import ResourceManagementResourceList from "@/views/resourceManagement/ResourceList";
+import ResourceManagementClusterManagement from "@/views/resourceManagement/ClusterManagement";
 
-import SystemAdministrationUserManagement from "@/pages/systemAdministration/UserManagement";
-import SystemAdministrationCloudAccountManagement from "@/pages/systemAdministration/CloudAccountManagement";
-import SystemAdministrationHealthRules from "@/pages/systemAdministration/HealthRules";
-import SystemAdministrationTaskManagement from "@/pages/systemAdministration/TaskManagement";
-import SystemAdministrationLogAuditing from "@/pages/systemAdministration/LogAuditing";
-import SystemAdministrationSystemSettings from "@/pages/systemAdministration/SystemSettings";
+import SystemAdministrationUserManagement from "@/views/systemAdministration/UserManagement";
+import SystemAdministrationCloudAccountManagement from "@/views/systemAdministration/CloudAccountManagement";
+import SystemAdministrationHealthRules from "@/views/systemAdministration/HealthRules";
+import SystemAdministrationTaskManagement from "@/views/systemAdministration/TaskManagement";
+import SystemAdministrationLogAuditing from "@/views/systemAdministration/LogAuditing";
+import SystemAdministrationSystemSettings from "@/views/systemAdministration/SystemSettings";
 
-import AccountInfo from "@/pages/account/Info";
-import AccountController from "@/pages/account/Controller";
+import AccountInfo from "@/views/account/Info";
+import AccountController from "@/views/account/Controller";
 
-import DocHelper from "@/pages/doc/Helper";
-import DocUserAgreement from "@/pages/doc/UserAgreement";
-import DocPrivacyPolicy from "@/pages/doc/PrivacyPolicy";
+import DocHelper from "@/views/doc/Helper";
+import DocUserAgreement from "@/views/doc/UserAgreement";
+import DocPrivacyPolicy from "@/views/doc/PrivacyPolicy";
 
-import TestApi from "@/pages/testPages/Api";
-import TestForms from "@/pages/testPages/Forms";
-import TestAnyCode from "@/pages/testPages/AnyCode";
-import TestChildPage from "@/pages/testPages/ChildPage";
-import TestChild from "@/pages/testPages/Child";
-import TestRxJS from "@/pages/testPages/RxJS";
+import TestApi from "@/views/testPages/Api";
+import TestForms from "@/views/testPages/Forms";
+import TestAnyCode from "@/views/testPages/AnyCode";
+import TestChildPage from "@/views/testPages/ChildPage";
+import TestChild from "@/views/testPages/Child";
+import TestRxJS from "@/views/testPages/RxJS";
 
-import PageTemplate from "@/pages/_template/PageTemplate";
-import PageRequestTemplate from "@/pages/_template/PageRequestTemplate";
+import PageTemplate from "@/views/_template/PageTemplate";
+import PageRequestTemplate from "@/views/_template/PageRequestTemplate";
 
-import NotFound from "@/pages/results/NotFound";
-import NotAuthorized from "@/pages/results/NotAuthorized";
-import ServerError from "@/pages/results/ServerError";
+import NotFound from "@/views/results/NotFound";
+import NotAuthorized from "@/views/results/NotAuthorized";
+import ServerError from "@/views/results/ServerError";
 
 // -------------------------
 
-import H5Booking from "@/pages/h5/Booking";
+import H5Booking from "@/views/h5/Booking";
 
 export interface IRoute {
   title: string;

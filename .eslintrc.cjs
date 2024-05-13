@@ -25,5 +25,6 @@ module.exports = {
     "max-params": "off",
     "no-sequences": "off",
     "no-empty": "off",
+    "@typescript-eslint/consistent-type-imports": "off",
   },
 };
