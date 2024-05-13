@@ -111,3 +111,8 @@ export const containerScrollToTop = () => {
   const container = document.getElementById("globalContentContainer");
   container?.scrollTo({ top: 0, behavior: "smooth" });
 };
+
+export const transUrl = (hash?: string) =>
+  hash
+    ? `${window.location.origin}${window.location.pathname}#${hash}`
+    : `${window.location.origin}${window.location.pathname}`;

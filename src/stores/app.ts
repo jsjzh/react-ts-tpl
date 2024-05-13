@@ -12,10 +12,8 @@ interface AppData {
 }
 
 interface AppFunc {
-  updateApp: (draft: (next: AppData["app"], replace?: boolean) => void) => void;
+  updateApp: (draft: (next: AppData["app"]) => void) => void;
 }
-
-export type AppStore = AppData & AppFunc;
 
 const useAppStore = create<AppStore>()(
   // devtools(
@@ -36,5 +34,7 @@ const useAppStore = create<AppStore>()(
   // { name: "useAppStore" },
   // ),
 );
+
+export type AppStore = AppData & AppFunc;
 
 export default useAppStore;
