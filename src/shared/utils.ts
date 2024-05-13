@@ -105,7 +105,7 @@ export const createInitPageQuery = <T extends { [k: string]: any }>(
     pageNo: 1,
     pageSize: 10,
     ...(values || {}),
-  } as any);
+  }) as any;
 
 export const containerScrollToTop = () => {
   const container = document.getElementById("globalContentContainer");
