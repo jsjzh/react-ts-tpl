@@ -1,19 +1,6 @@
 import React from "react";
-import { useImmer } from "use-immer";
-import PageWrapper from "@/components/PageWrapper";
+import { Outlet } from "react-router-dom";
 
-interface IProps {}
-
-const LayoutBlank: React.FC<IProps> = (props) => {
-  const [pageData, updatePageData] = useImmer<{}>({});
-  const [pageStatus, updatePageStatus] = useImmer<{}>({});
-  const [pageTempData, updatePageTempData] = useImmer<{}>({});
-
-  return (
-    <PageWrapper>
-      <div>LayoutBlank</div>
-    </PageWrapper>
-  );
-};
+const LayoutBlank: React.FC = () => <Outlet />;
 
 export default LayoutBlank;

@@ -1,19 +1,21 @@
 import React from "react";
-import { useImmer } from "use-immer";
-import PageWrapper from "@/components/PageWrapper";
+import { useRoutes } from "react-router-dom";
+import routes, { IRoute } from "@/routes";
+import type { RouteObject } from "react-router-dom";
 
-interface IProps {}
+const parseRoutes = (routes: IRoute[]): RouteObject[] =>
+  routes.map((route) => ({
+    path: route.path,
+    element: route.element,
+    children:
+      Array.isArray(route.children) && route.children.length
+        ? parseRoutes(route.children)
+        : undefined,
+    hasErrorBoundary: true,
+  }));
 
-const App: React.FC<IProps> = (props) => {
-  const [pageData, updatePageData] = useImmer<{}>({});
-  const [pageStatus, updatePageStatus] = useImmer<{}>({});
-  const [pageTempData, updatePageTempData] = useImmer<{}>({});
-
-  return (
-    <PageWrapper>
-      <div>App</div>
-    </PageWrapper>
-  );
+const App: React.FC = () => {
+  return useRoutes(parseRoutes(routes));
 };
 
 export default App;

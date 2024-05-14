@@ -10,7 +10,7 @@ import Error404 from "@/views/_errors/404";
 import Error500 from "@/views/_errors/500";
 
 import Login from "@/views/Login";
-import App from "@/views/App";
+import Homepage from "@/views/Homepage";
 
 export interface IRoute {
   title: string;
@@ -48,9 +48,9 @@ const routes: IRoute[] = [
     children: [
       {
         title: "首页",
-        path: "/homepage/app",
-        code: "APP",
-        element: <App />,
+        path: "/homepage",
+        code: "HOMEPAGE",
+        element: <Homepage />,
       },
     ],
   },
@@ -77,10 +77,10 @@ const routes: IRoute[] = [
   },
   {
     hide: true,
-    title: "ERROR403",
-    path: "/*",
-    code: "ERROR403",
-    element: <Error403 />,
+    title: "ERROR404",
+    path: "*",
+    code: "ERROR404",
+    element: <Error404 />,
   },
 ];
 
