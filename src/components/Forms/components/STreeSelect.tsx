@@ -1,6 +1,5 @@
 import React from "react";
 import { Form, TreeSelect } from "antd";
-import { omit } from "ramda";
 import SCol from "@/components/SCol";
 
 import type { ColProps, FormItemProps, TreeSelectProps } from "antd";
@@ -21,29 +20,17 @@ export interface ISTreeSelectProps {
   componentProps?: Omit<TreeSelectProps, "treeData" | "onChange">;
 }
 
-const _colProps = omit(["span"]);
-const _formItemProps = omit(["name", "label"]);
-const _componentProps = omit(["treeData", "onChange"]);
-
 const STreeSelect: React.FC<ISTreeSelectProps> = (props) => {
   return (
-    <SCol
-      size={props.size || "middle"}
-      span={props.span}
-      {..._colProps(props.colProps)}
-    >
-      <Form.Item
-        name={props.name}
-        label={props.label}
-        {..._formItemProps(props.formItemProps)}
-      >
+    <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
+      <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
         <TreeSelect
           style={{ width: "100%" }}
           allowClear
           treeNodeFilterProp="title"
           treeData={props.treeData}
           onChange={props.onChange}
-          {..._componentProps(props.componentProps)}
+          {...props.componentProps}
         />
       </Form.Item>
     </SCol>

@@ -1,6 +1,5 @@
 import React from "react";
 import { Form, Select } from "antd";
-import { omit } from "ramda";
 import SCol from "@/components/SCol";
 
 import type { ColProps, FormItemProps, SelectProps } from "antd";
@@ -16,29 +15,21 @@ export interface ISSelectProps {
   label?: React.ReactNode;
   formItemProps?: Omit<FormItemProps, "name" | "label">;
 
-  componentProps?: SelectProps;
+  options?: SelectProps["options"];
+  onChange?: SelectProps["onChange"];
+  componentProps?: Omit<SelectProps, "options" | "onChange">;
 }
-
-const _colProps = omit(["span"]);
-const _formItemProps = omit(["name", "label"]);
-const _componentProps = omit([]);
 
 const SSelect: React.FC<ISSelectProps> = (props) => {
   return (
-    <SCol
-      size={props.size || "middle"}
-      span={props.span}
-      {..._colProps(props.colProps)}
-    >
-      <Form.Item
-        name={props.name}
-        label={props.label}
-        {..._formItemProps(props.formItemProps)}
-      >
+    <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
+      <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
         <Select
           style={{ width: "100%" }}
           allowClear
-          {..._componentProps(props.componentProps)}
+          options={props.options}
+          onChange={props.onChange}
+          {...props.componentProps}
         />
       </Form.Item>
     </SCol>

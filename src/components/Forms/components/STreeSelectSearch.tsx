@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Form, TreeSelect } from "antd";
-import { omit } from "ramda";
 import SCol from "@/components/SCol";
 
 import type { ColProps, FormItemProps, TreeSelectProps } from "antd";
@@ -25,10 +24,6 @@ export interface ISTreeSelectSearchProps {
   componentProps?: Omit<TreeSelectProps, "treeData" | "onChange" | "onSearch">;
 }
 
-const _colProps = omit(["span"]);
-const _formItemProps = omit(["name", "label"]);
-const _componentProps = omit(["treeData", "onChange", "onSearch"]);
-
 const STreeSelectSearch: React.FC<ISTreeSelectSearchProps> = (props) => {
   const _handleSearch = (value: string) =>
     props.onSearch && props.onSearch(value);
@@ -40,16 +35,8 @@ const STreeSelectSearch: React.FC<ISTreeSelectSearchProps> = (props) => {
   }, []);
 
   return (
-    <SCol
-      size={props.size || "middle"}
-      span={props.span}
-      {..._colProps(props.colProps)}
-    >
-      <Form.Item
-        name={props.name}
-        label={props.label}
-        {..._formItemProps(props.formItemProps)}
-      >
+    <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
+      <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
         <TreeSelect
           style={{ width: "100%" }}
           allowClear
@@ -58,7 +45,7 @@ const STreeSelectSearch: React.FC<ISTreeSelectSearchProps> = (props) => {
           treeData={props.treeData}
           onSearch={handleSearch}
           onChange={props.onChange}
-          {..._componentProps(props.componentProps)}
+          {...props.componentProps}
         />
       </Form.Item>
     </SCol>

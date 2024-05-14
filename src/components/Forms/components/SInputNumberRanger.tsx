@@ -1,6 +1,5 @@
 import React from "react";
 import { Form, InputNumber, Space } from "antd";
-import { omit } from "ramda";
 import SCol from "@/components/SCol";
 
 import type { ColProps, InputNumberProps } from "antd";
@@ -19,15 +18,9 @@ export interface ISInputNumberRangerProps {
   componentPropss?: [InputNumberProps?, InputNumberProps?];
 }
 
-const _colProps = omit(["span"]);
-
 const SInputNumberRanger: React.FC<ISInputNumberRangerProps> = (props) => {
   return (
-    <SCol
-      size={props.size || "middle"}
-      span={props.span}
-      {..._colProps(props.colProps)}
-    >
+    <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
       <Form.Item
         name={`__${props.name}__`}
         label={props.label}

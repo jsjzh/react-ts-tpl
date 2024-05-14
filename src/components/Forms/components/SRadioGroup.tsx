@@ -1,6 +1,5 @@
 import React from "react";
 import { Radio, Form } from "antd";
-import { omit } from "ramda";
 import SCol from "@/components/SCol";
 
 import type { ColProps, FormItemProps, RadioGroupProps } from "antd";
@@ -21,26 +20,14 @@ export interface ISRadioGroupProps {
   componentProps?: Omit<RadioGroupProps, "options" | "onChange">;
 }
 
-const _colProps = omit(["span"]);
-const _formItemProps = omit(["name", "label"]);
-const _componentProps = omit(["options", "onChange"]);
-
 const SRadioGroup: React.FC<ISRadioGroupProps> = (props) => {
   return (
-    <SCol
-      size={props.size || "middle"}
-      span={props.span}
-      {..._colProps(props.colProps)}
-    >
-      <Form.Item
-        name={props.name}
-        label={props.label}
-        {..._formItemProps(props.formItemProps)}
-      >
+    <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
+      <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
         <Radio.Group
           options={props.options}
           onChange={props.onChange}
-          {..._componentProps(props.componentProps)}
+          {...props.componentProps}
         />
       </Form.Item>
     </SCol>

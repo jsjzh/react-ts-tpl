@@ -1,6 +1,5 @@
 import React from "react";
 import { Form } from "antd";
-import { omit } from "ramda";
 import SCol from "@/components/SCol";
 
 import type { ColProps, FormItemProps } from "antd";
@@ -10,7 +9,7 @@ import type { SColProps } from "@/components/SCol";
 export interface ISSelectProProps {
   size?: SColProps["size"];
   span?: number;
-  colProps?: ColProps;
+  colProps?: Omit<ColProps, "size" | "span">;
 
   name?: NamePath;
   label?: React.ReactNode;
@@ -19,21 +18,10 @@ export interface ISSelectProProps {
   content?: React.ReactNode;
 }
 
-const _colProps = omit(["span"]);
-const _formItemProps = omit(["name", "label"]);
-
 const SContent: React.FC<ISSelectProProps> = (props) => {
   return (
-    <SCol
-      size={props.size || "middle"}
-      span={props.span}
-      {..._colProps(props.colProps)}
-    >
-      <Form.Item
-        name={props.name}
-        label={props.label}
-        {..._formItemProps(props.formItemProps)}
-      >
+    <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
+      <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
         {props.content}
       </Form.Item>
     </SCol>

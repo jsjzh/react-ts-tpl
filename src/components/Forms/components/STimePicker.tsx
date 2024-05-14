@@ -1,6 +1,5 @@
 import React from "react";
 import { TimePicker, Form } from "antd";
-import { omit } from "ramda";
 import SCol from "@/components/SCol";
 
 import type { ColProps, FormItemProps, TimePickerProps } from "antd";
@@ -24,28 +23,16 @@ export interface ITimePickerProps {
   >;
 }
 
-const _colProps = omit(["span"]);
-const _formItemProps = omit(["name", "label"]);
-const _componentProps = omit(["picker", "disabledDate", "onChange"]);
-
 const STimePicker: React.FC<ITimePickerProps> = (props) => {
   return (
-    <SCol
-      size={props.size || "middle"}
-      span={props.span}
-      {..._colProps(props.colProps)}
-    >
-      <Form.Item
-        name={props.name}
-        label={props.label}
-        {..._formItemProps(props.formItemProps)}
-      >
+    <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
+      <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
         <TimePicker
           style={{ width: "100%" }}
           allowClear
           disabledDate={props.disabledDate}
           onChange={props.onChange}
-          {..._componentProps(props.componentProps)}
+          {...props.componentProps}
         />
       </Form.Item>
     </SCol>
