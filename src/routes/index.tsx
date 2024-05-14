@@ -5,7 +5,9 @@ import { AppstoreFilled } from "@ant-design/icons";
 import LayoutBlank from "@/views/_layouts/Blank";
 import LayoutContainer from "@/views/_layouts/Container";
 
-import NotFound from "@/views/Errors/404";
+import Error403 from "@/views/_errors/403";
+import Error404 from "@/views/_errors/404";
+import Error500 from "@/views/_errors/500";
 
 import Login from "@/views/Login";
 import App from "@/views/App";
@@ -54,10 +56,31 @@ const routes: IRoute[] = [
   },
   {
     hide: true,
-    title: "NotFound",
-    path: "*",
-    code: "NOTFOUND",
-    element: <NotFound />,
+    title: "ERROR403",
+    path: "/403",
+    code: "ERROR403",
+    element: <Error403 />,
+  },
+  {
+    hide: true,
+    title: "ERROR404",
+    path: "/404",
+    code: "ERROR404",
+    element: <Error404 />,
+  },
+  {
+    hide: true,
+    title: "ERROR500",
+    path: "/500",
+    code: "ERROR500",
+    element: <Error500 />,
+  },
+  {
+    hide: true,
+    title: "ERROR403",
+    path: "/*",
+    code: "ERROR403",
+    element: <Error403 />,
   },
 ];
 
