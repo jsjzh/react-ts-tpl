@@ -87,15 +87,15 @@ export const downloadFile = (fileName: string, blob: Blob) => {
   URL.revokeObjectURL(href);
 };
 
-export const createInitPageData = (
-  values?: Partial<BASE.PaginationResp<any>>,
-) => ({
+export const createInitPageData = <T>(
+  values: Partial<BASE.PaginationResp<T>> = {},
+): BASE.PaginationResp<T> => ({
   items: [],
   pageNo: 1,
   pageSize: 10,
   totalPage: 0,
   totalSize: 0,
-  ...(values || {}),
+  ...values,
 });
 
 export const createInitPageQuery = <T extends { [k: string]: any }>(
