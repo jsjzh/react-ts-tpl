@@ -1,73 +1,40 @@
 import { encode } from "js-base64";
 
-export const sleepAsync = (timer: number) =>
-  new Promise<void>((resolve) => setTimeout(resolve, timer));
+/**
+ * 异步延迟函数
+ * 创建一个Promise，在指定的延迟时间（毫秒）后自动解析，无返回值。
+ * 用于异步操作中的等待或流程控制。
+ *
+ * @param timer 延迟时间，单位为毫秒
+ * @returns 返回一个在延迟时间后解析的Promise
+ */
+export const sleepAsync = async (timer: number): Promise<void> => {
+  return new Promise<void>((resolve) => setTimeout(resolve, timer));
+};
 
-export const sleepSync = (timer: number) => {
+// 使用示例：
+// (async () => {
+//   console.log('开始等待...');
+//   await sleepAsync(2000); // 等待2秒
+//   console.log('等待结束！');
+// })();
+
+/**
+ * 不推荐的同步延迟函数
+ * 通过循环检查时间差来实现同步延迟，这会阻塞整个JavaScript执行线程。
+ * 避免在生产环境中使用，因为会导致应用无响应。
+ *
+ * @param timer 延迟时间，单位为毫秒
+ */
+export const sleepSync = (timer: number): void => {
   const current = Date.now();
-  while (Date.now() - current < timer) {}
+  while (Date.now() - current < timer) {
+    // 这里是忙等待，不推荐在生产环境中使用
+  }
 };
 
-export const types = (
-  obj: any,
-):
-  | "Number"
-  | "String"
-  | "Boolean"
-  | "Object"
-  | "Null"
-  | "Undefined"
-  | "Array"
-  | "Function"
-  | "Symbol"
-  | "Date"
-  | "BigInt"
-  | "Map"
-  | "Set"
-  | "WeakMap"
-  | "WeakSet"
-  | "Promise"
-  | "AsyncFunction"
-  | string => {
-  const matched = /^\[object (\w+)\]$/.exec(
-    Object.prototype.toString.call(obj),
-  );
-  return matched ? matched[1] : "unknown";
-};
-
-types.isNumber = (x: any) => types(x) === "Number";
-
-types.isString = (x: any) => types(x) === "String";
-
-types.isBoolean = (x: any) => types(x) === "Boolean";
-
-types.isObject = (x: any) => types(x) === "Object";
-
-types.isNull = (x: any) => types(x) === "Null";
-
-types.isUndefined = (x: any) => types(x) === "Undefined";
-
-types.isArray = (x: any) => types(x) === "Array";
-
-types.isFunction = (x: any) => types(x) === "Function";
-
-types.isSymbol = (x: any) => types(x) === "Symbol";
-
-types.isDate = (x: any) => types(x) === "Date";
-
-types.isBigInt = (x: any) => types(x) === "BigInt";
-
-types.isMap = (x: any) => types(x) === "Map";
-
-types.isSet = (x: any) => types(x) === "Set";
-
-types.isWeakMap = (x: any) => types(x) === "WeakMap";
-
-types.isWeakSet = (x: any) => types(x) === "WeakSet";
-
-types.isPromise = (x: any) => types(x) === "Promise";
-
-types.isAsyncFunction = (x: any) => types(x) === "AsyncFunction";
+// 使用示例（不建议在实际项目中使用此函数）
+// sleepSync(2000); // 应用将在此处阻塞2秒
 
 export const phoneReg =
   /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
@@ -77,14 +44,38 @@ export const isPhoneNumber = (phone: number | string) =>
 
 export const encodeBase64 = (pwd: string) => encode(pwd);
 
-export const downloadFile = (fileName: string, blob: Blob) => {
-  const aElement = document.createElement("a");
-  aElement.setAttribute("download", fileName);
-  const href = URL.createObjectURL(blob);
-  aElement.href = href;
-  aElement.setAttribute("target", "_blank");
-  aElement.click();
-  URL.revokeObjectURL(href);
+/**
+ * 下载Blob数据为指定名称的文件
+ * @param fileName 文件名，包括扩展名
+ * @param blob 要下载的Blob对象
+ */
+export const downloadFile = (fileName: string, blob: Blob): void => {
+  try {
+    // 创建隐藏的<a>标签
+    const aElement = document.createElement("a");
+    document.body.appendChild(aElement); // 将元素临时添加到DOM，以便能触发点击事件
+
+    // 设置下载属性和文件名
+    aElement.setAttribute("download", fileName);
+
+    // 创建Blob URL供下载使用
+    const href = URL.createObjectURL(blob);
+    aElement.href = href;
+
+    // 设置目标为新窗口打开，避免页面跳转（可选，根据需求决定是否保留）
+    // aElement.setAttribute("target", "_blank"); // 注释此行，根据实际情况决定是否需要新窗口打开
+
+    // 模拟点击以触发下载
+    aElement.click();
+
+    // 清理释放创建的Blob URL，避免内存泄漏
+    URL.revokeObjectURL(href);
+
+    // 完成后从DOM中移除临时元素
+    document.body.removeChild(aElement);
+  } catch (error) {
+    console.error("下载文件时发生错误:", error);
+  }
 };
 
 export const createInitPageData = <T>(
