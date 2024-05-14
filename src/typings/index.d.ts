@@ -11,9 +11,7 @@ declare namespace BASE {
     totalPage: number;
     totalSize: number;
   }
-}
 
-declare namespace APP {
   type PaginationResp<T = {}> = {
     items: T[];
   } & BASE.PPage;

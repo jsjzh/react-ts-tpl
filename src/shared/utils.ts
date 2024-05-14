@@ -88,7 +88,7 @@ export const downloadFile = (fileName: string, blob: Blob) => {
 };
 
 export const createInitPageData = (
-  values?: Partial<APP.PaginationResp<any>>,
+  values?: Partial<BASE.PaginationResp<any>>,
 ) => ({
   items: [],
   pageNo: 1,
@@ -105,7 +105,7 @@ export const createInitPageQuery = <T extends { [k: string]: any }>(
     pageNo: 1,
     pageSize: 10,
     ...(values || {}),
-  }) as any;
+  } as any);
 
 export const containerScrollToTop = () => {
   const container = document.getElementById("globalContentContainer");
