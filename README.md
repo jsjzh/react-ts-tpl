@@ -9,6 +9,7 @@
    1. react
    2. react-dom
    3. react-router-dom
+   4. styled-components
 3. UI
    1. antd
    2. @ant-design/icons
@@ -27,23 +28,8 @@
    1. ahooks
    2. dayjs
    3. decimal.js
-   4. styled-components
-7. tools-bak
-   1. ua-parser-js
-   2. swr
-   3. rxjs
    4. ramda
    5. js-base64
-
-## 草稿
-
-1. react18
-2. vite
-3. react-router-dom
-4. react-qurey axios ~~swr~~
-5. zustand ~~jotai valtio RTK~~
-6. ramda immer use-immer ~~lodash~~
-7. ahooks react-dnd
 
 ## 前后端共识
 
