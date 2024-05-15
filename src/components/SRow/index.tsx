@@ -44,7 +44,7 @@ const sizeMap = {
   },
 };
 
-export default (props: SRowProps) => {
+const SRow: React.FC<SRowProps> = (props) => {
   const defaultConfig = props.gutter
     ? {}
     : { gutter: sizeMap[props.size || "middle"] };
@@ -55,3 +55,5 @@ export default (props: SRowProps) => {
     </Row>
   );
 };
+
+export default SRow;

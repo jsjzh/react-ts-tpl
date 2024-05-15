@@ -53,7 +53,7 @@ const sizeMap = {
   },
 };
 
-export default (props: SColProps) => {
+const SCol: React.FC<SColProps> = (props) => {
   const defaultConfig = props.span ? {} : sizeMap[props.size || "middle"];
 
   return (
@@ -62,3 +62,5 @@ export default (props: SColProps) => {
     </Col>
   );
 };
+
+export default SCol;
