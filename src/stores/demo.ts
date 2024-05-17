@@ -2,8 +2,8 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { devtools, persist } from "zustand/middleware";
 
-interface AppData {
-  App: {
+interface DemoData {
+  Demo: {
     pageData: {};
     pageStatus: {};
     pageQuery: {};
@@ -11,30 +11,30 @@ interface AppData {
   };
 }
 
-interface AppFunc {
-  updateApp: (draft: (next: AppData["App"]) => void) => void;
+interface DemoFunc {
+  updateDemo: (draft: (next: DemoData["Demo"]) => void) => void;
 }
 
-const useAppStore = create<AppStore>()(
+const useDemoStore = create<DemoStore>()(
   // devtools(
   // persist(
   immer((set, get, api) => {
     return {
-      App: {
+      Demo: {
         pageData: {},
         pageStatus: {},
         pageQuery: {},
         pageTempData: {},
       },
-      updateApp: (fn) => set((draft) => fn(draft.App)),
+      updateDemo: (fn) => set((draft) => fn(draft.Demo)),
     };
   }),
-  // { name: "useAppStore" },
+  // { name: "useDemoStore" },
   // ),
-  // { name: "useAppStore" },
+  // { name: "useDemoStore" },
   // ),
 );
 
-export type AppStore = AppData & AppFunc;
+export type DemoStore = DemoData & DemoFunc;
 
-export default useAppStore;
+export default useDemoStore;

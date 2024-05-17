@@ -1,5 +1,5 @@
-import useApp from "./app";
-import type { AppStore } from "./app";
+import useApp, { AppStore } from "./app";
+import useDemo, { DemoStore } from "./demo";
 
-export { useApp };
-export type { AppStore };
+export { useApp, useDemo };
+export type { AppStore, DemoStore };
