@@ -15,7 +15,7 @@ export interface ISContentProps {
   label?: React.ReactNode;
   formItemProps?: Omit<FormItemProps, "name" | "label">;
 
-  content?: React.ReactNode;
+  content: React.ReactNode;
 }
 
 const SContent: React.FC<ISContentProps> = (props) => {
