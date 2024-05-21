@@ -1,36 +1,31 @@
 import React from "react";
-import { Form, Input } from "antd";
+import { Form } from "antd";
 import SCol from "@/components/SCol";
 
 import type { ColProps, FormItemProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
-import type { TextAreaProps } from "antd/es/input";
 import type { SColProps } from "@/components/SCol";
 
-export interface ISTextAreaProps {
+export interface ISSelectProProps {
   size?: SColProps["size"];
   span?: number;
-  colProps?: ColProps;
+  colProps?: Omit<ColProps, "size" | "span">;
 
-  name: NamePath;
+  name?: NamePath;
   label?: React.ReactNode;
   formItemProps?: Omit<FormItemProps, "name" | "label">;
 
-  componentProps?: TextAreaProps;
+  content?: React.ReactNode;
 }
 
-const STextArea: React.FC<ISTextAreaProps> = (props) => {
+const SContent: React.FC<ISSelectProProps> = (props) => {
   return (
     <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
       <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
-        <Input.TextArea
-          style={{ width: "100%" }}
-          allowClear
-          {...props.componentProps}
-        />
+        {props.content}
       </Form.Item>
     </SCol>
   );
 };
 
-export default STextArea;
+export default SContent;

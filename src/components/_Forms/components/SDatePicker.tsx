@@ -1,31 +1,39 @@
 import React from "react";
-import { Form, Input } from "antd";
+import { DatePicker, Form } from "antd";
 import SCol from "@/components/SCol";
 
-import type { ColProps, FormItemProps } from "antd";
+import type { ColProps, FormItemProps, DatePickerProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
-import type { TextAreaProps } from "antd/es/input";
 import type { SColProps } from "@/components/SCol";
 
-export interface ISTextAreaProps {
+export interface ISDatePickerProps {
   size?: SColProps["size"];
   span?: number;
-  colProps?: ColProps;
+  colProps?: Omit<ColProps, "size" | "span">;
 
   name: NamePath;
   label?: React.ReactNode;
   formItemProps?: Omit<FormItemProps, "name" | "label">;
 
-  componentProps?: TextAreaProps;
+  picker?: DatePickerProps["picker"];
+  disabledDate?: DatePickerProps["disabledDate"];
+  onChange?: DatePickerProps["onChange"];
+  componentProps?: Omit<
+    DatePickerProps,
+    "picker" | "disabledDate" | "onChange"
+  >;
 }
 
-const STextArea: React.FC<ISTextAreaProps> = (props) => {
+const SDatePicker: React.FC<ISDatePickerProps> = (props) => {
   return (
     <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
       <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
-        <Input.TextArea
+        <DatePicker
           style={{ width: "100%" }}
           allowClear
+          picker={props.picker}
+          disabledDate={props.disabledDate}
+          onChange={props.onChange}
           {...props.componentProps}
         />
       </Form.Item>
@@ -33,4 +41,4 @@ const STextArea: React.FC<ISTextAreaProps> = (props) => {
   );
 };
 
-export default STextArea;
+export default SDatePicker;

@@ -6,7 +6,7 @@ import type { ColProps, FormItemProps, TimePickerProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
 import type { SColProps } from "@/components/SCol";
 
-export interface ITimePickerProps {
+export interface ISTimePickerProps {
   size?: SColProps["size"];
   span?: number;
   colProps?: ColProps;
@@ -23,7 +23,7 @@ export interface ITimePickerProps {
   >;
 }
 
-const STimePicker: React.FC<ITimePickerProps> = (props) => {
+const STimePicker: React.FC<ISTimePickerProps> = (props) => {
   return (
     <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
       <Form.Item name={props.name} label={props.label} {...props.formItemProps}>

@@ -1,13 +1,12 @@
 import React from "react";
-import { Form, Input } from "antd";
+import { TimePicker, Form } from "antd";
 import SCol from "@/components/SCol";
 
-import type { ColProps, FormItemProps } from "antd";
+import type { ColProps, FormItemProps, TimePickerProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
-import type { TextAreaProps } from "antd/es/input";
 import type { SColProps } from "@/components/SCol";
 
-export interface ISTextAreaProps {
+export interface ITimePickerProps {
   size?: SColProps["size"];
   span?: number;
   colProps?: ColProps;
@@ -16,16 +15,23 @@ export interface ISTextAreaProps {
   label?: React.ReactNode;
   formItemProps?: Omit<FormItemProps, "name" | "label">;
 
-  componentProps?: TextAreaProps;
+  disabledDate?: TimePickerProps["disabledDate"];
+  onChange?: TimePickerProps["onChange"];
+  componentProps?: Omit<
+    TimePickerProps,
+    "picker" | "disabledDate" | "onChange"
+  >;
 }
 
-const STextArea: React.FC<ISTextAreaProps> = (props) => {
+const STimePicker: React.FC<ITimePickerProps> = (props) => {
   return (
     <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
       <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
-        <Input.TextArea
+        <TimePicker
           style={{ width: "100%" }}
           allowClear
+          disabledDate={props.disabledDate}
+          onChange={props.onChange}
           {...props.componentProps}
         />
       </Form.Item>
@@ -33,4 +39,4 @@ const STextArea: React.FC<ISTextAreaProps> = (props) => {
   );
 };
 
-export default STextArea;
+export default STimePicker;

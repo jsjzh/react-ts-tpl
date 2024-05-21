@@ -1,13 +1,12 @@
 import React from "react";
-import { Form, Input } from "antd";
+import { Radio, Form } from "antd";
 import SCol from "@/components/SCol";
 
-import type { ColProps, FormItemProps } from "antd";
+import type { ColProps, FormItemProps, RadioGroupProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
-import type { TextAreaProps } from "antd/es/input";
 import type { SColProps } from "@/components/SCol";
 
-export interface ISTextAreaProps {
+export interface ISRadioGroupProps {
   size?: SColProps["size"];
   span?: number;
   colProps?: ColProps;
@@ -16,16 +15,18 @@ export interface ISTextAreaProps {
   label?: React.ReactNode;
   formItemProps?: Omit<FormItemProps, "name" | "label">;
 
-  componentProps?: TextAreaProps;
+  options?: RadioGroupProps["options"];
+  onChange?: RadioGroupProps["onChange"];
+  componentProps?: Omit<RadioGroupProps, "options" | "onChange">;
 }
 
-const STextArea: React.FC<ISTextAreaProps> = (props) => {
+const SRadioGroup: React.FC<ISRadioGroupProps> = (props) => {
   return (
     <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
       <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
-        <Input.TextArea
-          style={{ width: "100%" }}
-          allowClear
+        <Radio.Group
+          options={props.options}
+          onChange={props.onChange}
           {...props.componentProps}
         />
       </Form.Item>
@@ -33,4 +34,4 @@ const STextArea: React.FC<ISTextAreaProps> = (props) => {
   );
 };
 
-export default STextArea;
+export default SRadioGroup;

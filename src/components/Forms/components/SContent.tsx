@@ -6,7 +6,7 @@ import type { ColProps, FormItemProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
 import type { SColProps } from "@/components/SCol";
 
-export interface ISSelectProProps {
+export interface ISContentProps {
   size?: SColProps["size"];
   span?: number;
   colProps?: Omit<ColProps, "size" | "span">;
@@ -18,7 +18,7 @@ export interface ISSelectProProps {
   content?: React.ReactNode;
 }
 
-const SContent: React.FC<ISSelectProProps> = (props) => {
+const SContent: React.FC<ISContentProps> = (props) => {
   return (
     <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
       <Form.Item name={props.name} label={props.label} {...props.formItemProps}>

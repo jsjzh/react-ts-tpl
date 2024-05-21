@@ -7,7 +7,7 @@ import type { NamePath } from "antd/es/form/interface";
 import type { TextAreaProps } from "antd/es/input";
 import type { SColProps } from "@/components/SCol";
 
-export interface ISTextAreaProps {
+export interface ISInputProps {
   size?: SColProps["size"];
   span?: number;
   colProps?: ColProps;
@@ -19,7 +19,7 @@ export interface ISTextAreaProps {
   componentProps?: TextAreaProps;
 }
 
-const STextArea: React.FC<ISTextAreaProps> = (props) => {
+const STextArea: React.FC<ISInputProps> = (props) => {
   return (
     <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
       <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
