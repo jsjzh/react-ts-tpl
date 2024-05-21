@@ -16,7 +16,8 @@ export interface ISTextAreaProps {
   label?: React.ReactNode;
   formItemProps?: Omit<FormItemProps, "name" | "label">;
 
-  componentProps?: TextAreaProps;
+  onChange?: TextAreaProps["onChange"];
+  componentProps?: Omit<TextAreaProps, "onChange">;
 }
 
 const STextArea: React.FC<ISTextAreaProps> = (props) => {
@@ -26,6 +27,7 @@ const STextArea: React.FC<ISTextAreaProps> = (props) => {
         <Input.TextArea
           style={{ width: "100%" }}
           allowClear
+          onChange={props.onChange}
           {...props.componentProps}
         />
       </Form.Item>

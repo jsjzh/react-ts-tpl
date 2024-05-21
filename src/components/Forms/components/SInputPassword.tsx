@@ -16,7 +16,8 @@ export interface ISInputPasswordProps {
   label?: React.ReactNode;
   formItemProps?: Omit<FormItemProps, "name" | "label">;
 
-  componentProps?: PasswordProps;
+  onChange?: PasswordProps["onChange"];
+  componentProps?: Omit<PasswordProps, "onChange">;
 }
 
 const SInputPassword: React.FC<ISInputPasswordProps> = (props) => {
@@ -26,6 +27,7 @@ const SInputPassword: React.FC<ISInputPasswordProps> = (props) => {
         <Input.Password
           style={{ width: "100%" }}
           allowClear
+          onChange={props.onChange}
           {...props.componentProps}
         />
       </Form.Item>

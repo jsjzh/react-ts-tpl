@@ -15,7 +15,8 @@ export interface ISCheckboxProps {
   label?: React.ReactNode;
   formItemProps?: Omit<FormItemProps, "name" | "label">;
 
-  componentProps?: CheckboxProps;
+  onChange?: CheckboxProps["onChange"];
+  componentProps?: Omit<CheckboxProps, "onChange">;
 
   children?: ReactNode;
 }
@@ -29,7 +30,9 @@ const SCheckbox: React.FC<ISCheckboxProps> = (props) => {
         valuePropName="checked"
         {...props.formItemProps}
       >
-        <Checkbox {...props.componentProps}>{props.children}</Checkbox>
+        <Checkbox onChange={props.onChange} {...props.componentProps}>
+          {props.children}
+        </Checkbox>
       </Form.Item>
     </SCol>
   );

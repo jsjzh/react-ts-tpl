@@ -21,7 +21,7 @@ export interface ISSelectSearchProps {
   options?: SelectProps["options"];
   onSearch?: SelectProps["onSearch"];
   onChange?: SelectProps["onChange"];
-  componentProps?: Omit<SelectProps, "onSearch" | "options" | "onChange">;
+  componentProps?: Omit<SelectProps, "options" | "onSearch" | "onChange">;
 }
 
 const SSelectSearch: React.FC<ISSelectSearchProps> = (props) => {

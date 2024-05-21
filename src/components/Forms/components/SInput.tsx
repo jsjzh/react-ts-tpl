@@ -15,14 +15,20 @@ export interface ISInputProps {
   label?: React.ReactNode;
   formItemProps?: Omit<FormItemProps, "name" | "label">;
 
-  componentProps?: InputProps;
+  onChange?: InputProps["onChange"];
+  componentProps?: Omit<InputProps, "onChange">;
 }
 
 const SInput: React.FC<ISInputProps> = (props) => {
   return (
     <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
       <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
-        <Input style={{ width: "100%" }} allowClear {...props.componentProps} />
+        <Input
+          style={{ width: "100%" }}
+          allowClear
+          onChange={props.onChange}
+          {...props.componentProps}
+        />
       </Form.Item>
     </SCol>
   );
