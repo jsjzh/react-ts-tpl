@@ -10,7 +10,7 @@ import Error404 from "@/views/_errors/404";
 import Error500 from "@/views/_errors/500";
 
 import Login from "@/views/Login";
-import Homepage from "@/views/Homepage";
+import Homepage from "@/views/Home";
 
 export interface IRoute {
   title: string;
