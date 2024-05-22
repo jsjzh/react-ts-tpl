@@ -1,12 +1,11 @@
+import React from "react";
 import ReactDOM from "react-dom/client";
-import { HashRouter, BrowserRouter, MemoryRouter } from "react-router-dom";
+
+import { RouterProvider } from "react-router-dom";
+import router from "./router";
 
 import { ConfigProvider } from "antd";
 import zhCN from "antd/es/locale/zh_CN";
-
-import dayjs from "dayjs";
-import "dayjs/locale/zh-cn";
-dayjs.locale("zh-cn");
 
 import "antd/dist/reset.css";
 import "./index.less";
@@ -16,18 +15,21 @@ import {
   legacyLogicalPropertiesTransformer,
 } from "@ant-design/cssinjs";
 
-import App from "@/views/App";
+import dayjs from "dayjs";
+import "dayjs/locale/zh-cn";
+
+dayjs.locale("zh-cn");
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
 
 root.render(
-  <HashRouter>
+  <React.StrictMode>
     <ConfigProvider locale={zhCN}>
       <StyleProvider transformers={[legacyLogicalPropertiesTransformer]}>
-        <App />
+        <RouterProvider router={router} />
       </StyleProvider>
     </ConfigProvider>
-  </HashRouter>,
+  </React.StrictMode>,
 );

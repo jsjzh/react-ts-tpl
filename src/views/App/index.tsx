@@ -1,6 +1,6 @@
 import React from "react";
 import { useRoutes } from "react-router-dom";
-import routes, { IRoute } from "@/routes";
+import routes, { IRoute } from "@/router/xxx";
 import type { RouteObject } from "react-router-dom";
 
 const parseRoutes = (routes: IRoute[]): RouteObject[] =>
