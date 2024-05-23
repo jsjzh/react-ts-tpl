@@ -12,46 +12,29 @@ import Error500 from "@/views/_errors/500";
 import ErrorBoundary from "@/views/_errors/ErrorBoundary";
 
 import Login from "@/views/Login";
-import Homepage from "@/views/Home";
+import Home from "@/views/Home";
 import TodoList from "@/views/Todo/List";
 import TodoDetail from "@/views/Todo/Detail";
 
-export type IRoute = RouteObject & {
-  title?: string;
-  code?: string;
-  hide?: boolean;
-  icon?: ReactNode;
-};
-
-export const routes: IRoute[] = [
+export const routes: RouteObject[] = [
   {
     path: "/",
     element: <LayoutRoot />,
     errorElement: <ErrorBoundary />,
-    loader: () => {
-      return { rootData: "hello" };
-    },
     children: [
+      { index: true, element: <Login /> },
       {
-        path: "/",
-        element: <LayoutBlank />,
-        children: [{ path: "/", element: <Login /> }],
-      },
-      {
-        path: "dashboard",
+        path: "/dashboard",
         element: <LayoutContainer />,
         children: [
-          { path: "home", element: <Homepage /> },
-          {
-            path: "todo",
-            element: <TodoList />,
-            children: [{ path: ":id", element: <TodoDetail /> }],
-          },
+          { index: true, element: <Home /> },
+          { path: "/dashboard/todo", element: <TodoList /> },
+          { path: "/dashboard/todo/:id", element: <TodoDetail /> },
         ],
       },
-      { path: "403", element: <Error403 /> },
-      { path: "404", element: <Error404 /> },
-      { path: "500", element: <Error500 /> },
+      { path: "/403", element: <Error403 /> },
+      { path: "/404", element: <Error404 /> },
+      { path: "/500", element: <Error500 /> },
       { path: "*", element: <Error404 /> },
     ],
   },

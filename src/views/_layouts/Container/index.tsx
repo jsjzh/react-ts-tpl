@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, useRoutes } from "react-router-dom";
 import styled from "styled-components";
 
-import { Menu, MenuProps } from "antd";
-import {
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { IRoute, routes } from "@/router";
-import { containerScrollToTop } from "@/shared/utils";
+import { Menu, MenuItemProps, MenuProps } from "antd";
+import { routes } from "@/router";
+import createProTree from "@/shared/createProTree";
 
 const styles: { [k: string]: string | number } = {
   headerHeight: "4rem",
@@ -55,87 +50,45 @@ const SiderContainer = styled.div`
   overflow: auto;
 `;
 
-// const items: MenuProps["items"] = [
-//   UserOutlined,
-//   LaptopOutlined,
-//   NotificationOutlined,
-// ].map((icon, index) => {
-//   return routes.map((route) => ({
-//     key: route.path,
-//     icon: React.createElement(icon),
-//     label: route.title,
-//   }));
-
-//   // const key = String(index + 1);
-
-//   // return {
-//   //   key: `sub${key}`,
-//   //   icon: React.createElement(icon),
-//   //   label: `subnav ${key}`,
-
-//   //   children: new Array(3).fill(null).map((_, j) => {
-//   //     const subKey = index * 4 + j + 1;
-//   //     return {
-//   //       key: subKey,
-//   //       label: `option${subKey}`,
-//   //     };
-//   //   }),
-//   // };
-// });
-
-type MenuItem = Required<MenuProps>["items"][number];
+// const menu: MenuProps["items"] = [
+//   { key: "/dashboard/home", label: "首页" },
+//   {
+//     key: "/dashboard/todo",
+//     label: "待办",
+//     children: [{ key: "/dashboard/todo", label: "列表" }],
+//   },
+// ];
 
 const Sider: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [menu, setMenu] = useState<MenuItem[]>([]);
+  const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
+  const [openKeys, setOpenKeys] = useState<(string | number)[]>([]);
 
-  const generateSiderTree = (routes: IRoute[]) => {
-    const result: MenuItem[] = [];
-
-    for (let index = 0; index < routes.length; index++) {
-      const route = routes[index];
-
-      if (route.hide) continue;
-
-      let item: MenuItem = {
-        icon: route.icon,
-        key: route.path,
-        label: route.title,
-        onClick: (e: any) => {
-          if (!route.children) {
-            containerScrollToTop();
-            navigate(e.key);
-          }
-        },
-      };
-
-      if (Array.isArray(route.children) && route.children.length) {
-        if (route.children.length === 1) {
-          const current = route.children[0];
-          item = {
-            icon: item.icon,
-            key: current.path,
-            label: current.title,
-            onClick: (e: any) => {
-              containerScrollToTop();
-              navigate(current.path);
-            },
-          };
-        } else {
-          (item as any).children = generateSiderTree(route.children);
-        }
-      }
-
-      result.push(item);
-    }
-
-    return result;
+  const handleClick: MenuProps["onClick"] = (props) => {
+    navigate(props.key);
+    setSelectedKeys([props.key]);
+    // setOpenKeys([props.keyPath[props.keyPath.length - 1]]);
   };
 
+  const menu = [
+    { label: "首页", key: "/dashboard", onClick: handleClick },
+    {
+      label: "待办",
+      key: "todo",
+      children: [
+        { label: "列表", key: "/dashboard/todo", onClick: handleClick },
+        { label: "详情", key: "/dashboard/todo/123", onClick: handleClick },
+      ],
+    },
+  ];
+
   useEffect(() => {
-    setMenu(generateSiderTree(routes));
+    setSelectedKeys([location.pathname]);
+    setOpenKeys(
+      createProTree(menu).pathBefore(location.pathname).slice(0, -1) as any,
+    );
   }, []);
 
   return (
@@ -143,11 +96,8 @@ const Sider: React.FC = () => {
       <Menu
         mode="inline"
         style={{ height: "100%" }}
-        // TODO
-        // 这里感觉有些问题，应该是用 pathtree 向上寻址来完成
-        // 但是因为统一的路径命名规范，所以用 split 来分割也行
-        defaultOpenKeys={[`/${location.pathname.split("/")[1]}`]}
-        selectedKeys={[location.pathname]}
+        selectedKeys={selectedKeys as any}
+        openKeys={openKeys as any}
         items={menu}
       />
     </SiderContainer>
