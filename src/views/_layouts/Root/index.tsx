@@ -1,51 +1,7 @@
-import React, { useEffect } from "react";
-import {
-  Outlet,
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import React from "react";
+import { Outlet } from "react-router-dom";
 
 const LayoutRoot: React.FC = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const params = useParams();
-
-  const [query, setQuery] = useSearchParams();
-
-  // console.log(query.get("demo"));
-
-  useEffect(() => {
-    setQuery({ demo: "test" });
-  }, []);
-
-  // console.log("location", location);
-  // console.log("location.state", JSON.stringify(location.state));
-
-  // console.log("params", params);
-
-  // const history = createBrowserHistory();
-  // history.listen(({ location, action }) => {
-  //   // this is called whenever new locations come in
-  //   // the action is POP, PUSH, or REPLACE
-  // });
-
-  // let locations = {
-  //   pathname: "/bbq/pig-pickins",
-  //   search: "?campaign=instagram&campaign=instagram2&popular=true",
-  //   hash: "",
-  //   state: null,
-  //   key: "aefz24ie",
-  // };
-  // const query = new URLSearchParams(locations.search);
-  // console.log(query);
-  // console.log(query.getAll("campaign"));
-
-  // https://reactrouter.com/en/main/start/tutorial#tutorial
-  // https://reactrouter.com/en/main/route/route#children
-  // https://reactrouter.com/en/main/start/concepts#match-params
-
   return <Outlet />;
 };
 
