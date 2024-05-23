@@ -11,10 +11,10 @@ import Error404 from "@/views/_errors/404";
 import Error500 from "@/views/_errors/500";
 import ErrorBoundary from "@/views/_errors/ErrorBoundary";
 
-// import Login from "@/views/Login";
+import Login from "@/views/Login";
 import Homepage from "@/views/Home";
-
-const LoginLazy = () => require("../views/Login").default;
+import TodoList from "@/views/Todo/List";
+import TodoDetail from "@/views/Todo/Detail";
 
 export type IRoute = RouteObject & {
   title?: string;
@@ -35,24 +35,19 @@ export const routes: IRoute[] = [
       {
         path: "/",
         element: <LayoutBlank />,
-        children: [
-          {
-            path: "/",
-            // element: <Login />,
-            lazy: () => import("@/views/Login"),
-            loader: () => {
-              return { loginData: "hello" };
-            },
-            // action: () => {
-            //   throw json({ message: "email is required" }, { status: 401 });
-            // },
-          },
-        ],
+        children: [{ path: "/", element: <Login /> }],
       },
       {
         path: "dashboard",
         element: <LayoutContainer />,
-        children: [{ path: "home", element: <Homepage /> }],
+        children: [
+          { path: "home", element: <Homepage /> },
+          {
+            path: "todo",
+            element: <TodoList />,
+            children: [{ path: ":id", element: <TodoDetail /> }],
+          },
+        ],
       },
       { path: "403", element: <Error403 /> },
       { path: "404", element: <Error404 /> },
