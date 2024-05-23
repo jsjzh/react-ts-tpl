@@ -26,5 +26,6 @@ module.exports = {
     "no-sequences": "off",
     "no-empty": "off",
     "@typescript-eslint/consistent-type-imports": "off",
+    "@typescript-eslint/prefer-for-of": "off",
   },
 };

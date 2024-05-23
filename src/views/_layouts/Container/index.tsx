@@ -1,5 +1,5 @@
-import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { Menu, MenuProps } from "antd";
@@ -8,6 +8,8 @@ import {
   NotificationOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import { IRoute, routes } from "@/router";
+import { containerScrollToTop } from "@/shared/utils";
 
 const styles: { [k: string]: string | number } = {
   headerHeight: "4rem",
@@ -53,30 +55,88 @@ const SiderContainer = styled.div`
   overflow: auto;
 `;
 
-const items: MenuProps["items"] = [
-  UserOutlined,
-  LaptopOutlined,
-  NotificationOutlined,
-].map((icon, index) => {
-  const key = String(index + 1);
+// const items: MenuProps["items"] = [
+//   UserOutlined,
+//   LaptopOutlined,
+//   NotificationOutlined,
+// ].map((icon, index) => {
+//   return routes.map((route) => ({
+//     key: route.path,
+//     icon: React.createElement(icon),
+//     label: route.title,
+//   }));
 
-  return {
-    key: `sub${key}`,
-    icon: React.createElement(icon),
-    label: `subnav ${key}`,
+//   // const key = String(index + 1);
 
-    children: new Array(3).fill(null).map((_, j) => {
-      const subKey = index * 4 + j + 1;
-      return {
-        key: subKey,
-        label: `option${subKey}`,
-      };
-    }),
-  };
-});
+//   // return {
+//   //   key: `sub${key}`,
+//   //   icon: React.createElement(icon),
+//   //   label: `subnav ${key}`,
+
+//   //   children: new Array(3).fill(null).map((_, j) => {
+//   //     const subKey = index * 4 + j + 1;
+//   //     return {
+//   //       key: subKey,
+//   //       label: `option${subKey}`,
+//   //     };
+//   //   }),
+//   // };
+// });
+
+type MenuItem = Required<MenuProps>["items"][number];
 
 const Sider: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const [menu, setMenu] = useState<MenuItem[]>([]);
+
+  const generateSiderTree = (routes: IRoute[]) => {
+    const result: MenuItem[] = [];
+
+    for (let index = 0; index < routes.length; index++) {
+      const route = routes[index];
+
+      if (route.hide) continue;
+
+      let item: MenuItem = {
+        icon: route.icon,
+        key: route.path,
+        label: route.title,
+        onClick: (e: any) => {
+          if (!route.children) {
+            containerScrollToTop();
+            navigate(e.key);
+          }
+        },
+      };
+
+      if (Array.isArray(route.children) && route.children.length) {
+        if (route.children.length === 1) {
+          const current = route.children[0];
+          item = {
+            icon: item.icon,
+            key: current.path,
+            label: current.title,
+            onClick: (e: any) => {
+              containerScrollToTop();
+              navigate(current.path);
+            },
+          };
+        } else {
+          (item as any).children = generateSiderTree(route.children);
+        }
+      }
+
+      result.push(item);
+    }
+
+    return result;
+  };
+
+  useEffect(() => {
+    setMenu(generateSiderTree(routes));
+  }, []);
 
   return (
     <SiderContainer>
@@ -88,7 +148,7 @@ const Sider: React.FC = () => {
         // 但是因为统一的路径命名规范，所以用 split 来分割也行
         defaultOpenKeys={[`/${location.pathname.split("/")[1]}`]}
         selectedKeys={[location.pathname]}
-        items={items}
+        items={menu}
       />
     </SiderContainer>
   );
