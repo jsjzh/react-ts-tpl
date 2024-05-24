@@ -63,32 +63,35 @@ const Sider: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
-  const [openKeys, setOpenKeys] = useState<(string | number)[]>([]);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const [openKeys, setOpenKeys] = useState<string[]>([]);
 
   const handleClick: MenuProps["onClick"] = (props) => {
-    navigate(props.key);
     setSelectedKeys([props.key]);
-    // setOpenKeys([props.keyPath[props.keyPath.length - 1]]);
+    navigate(props.key);
+  };
+
+  const handleOpenChange: MenuProps["onOpenChange"] = (props) => {
+    setOpenKeys(props);
   };
 
   const menu = [
-    { label: "首页", key: "/dashboard", onClick: handleClick },
+    { label: "首页", key: "/dashboard" },
     {
       label: "待办",
       key: "todo",
       children: [
-        { label: "列表", key: "/dashboard/todo", onClick: handleClick },
-        { label: "详情", key: "/dashboard/todo/123", onClick: handleClick },
+        { label: "列表", key: "/dashboard/todo" },
+        { label: "详情", key: "/dashboard/todo/123" },
       ],
     },
   ];
 
   useEffect(() => {
     setSelectedKeys([location.pathname]);
-    setOpenKeys(
-      createProTree(menu).pathBefore(location.pathname).slice(0, -1) as any,
-    );
+    const proTree = createProTree(menu);
+    const path = proTree.pathBefore(location.pathname) as string[];
+    setOpenKeys(path);
   }, []);
 
   return (
@@ -96,9 +99,11 @@ const Sider: React.FC = () => {
       <Menu
         mode="inline"
         style={{ height: "100%" }}
-        selectedKeys={selectedKeys as any}
-        openKeys={openKeys as any}
         items={menu}
+        selectedKeys={selectedKeys}
+        openKeys={openKeys}
+        onClick={handleClick}
+        onOpenChange={handleOpenChange}
       />
     </SiderContainer>
   );
