@@ -37,13 +37,13 @@ class ProTree {
     };
   }
 
-  public pathBefore(key: Key | null): (Key | null)[] {
+  public path(key: Key | null): (Key | null)[] {
     const item = this.flatTreeData.find((item) => item.key === key);
     if (!item) return [];
-    return [...this.pathBefore(item.__parentKey), key];
+    return [...this.path(item.__parentKey), key];
   }
 
-  public deepMap<T extends Omit<ITreeData, "children" | "key">>(
+  public map<T extends Omit<ITreeData, "children" | "key">>(
     callback: (item: ITreeData) => T,
   ): T[] {
     const handle = <T extends Omit<ITreeData, "children">>(
@@ -141,7 +141,7 @@ const treeData: ITreeData[] = [
 const proTree = createProTree(treeData, {});
 
 console.log(
-  proTree.deepMap((item) => ({
+  proTree.map((item) => ({
     path: item.key,
   })),
 );

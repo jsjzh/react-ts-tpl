@@ -80,7 +80,7 @@ const Sider: React.FC = () => {
   useEffect(() => {
     setSelectedKeys([location.pathname]);
     const proTree = createProTree(menu);
-    const path = proTree.pathBefore(location.pathname) as string[];
+    const path = proTree.path(location.pathname) as string[];
 
     setOpenKeys(path);
   }, []);
