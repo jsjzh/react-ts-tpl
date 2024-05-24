@@ -9,7 +9,7 @@ const Login: React.FC<IProps> = (props) => {
   return (
     <PageWrapper>
       <div>Login</div>
-      <Link to="/dashboard/home" state={{ from: "login" }}>
+      <Link to="/dashboard" state={{ from: "login" }}>
         home
       </Link>
       <Link to="/dashboard/todo" state={{ from: "login" }}>
