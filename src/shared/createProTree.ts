@@ -16,6 +16,7 @@ interface IProcessTreeData extends ITreeData {
 interface IOptions {
   customKey?: string;
   customChildren?: string;
+  // undefinedChildren?: Key;
 }
 
 class ProTree {
@@ -42,9 +43,23 @@ class ProTree {
     return [...this.pathBefore(item.__parentKey), key];
   }
 
-  public pathAfter(key: Key | null): ITreeData[] {
-    const item = this.flatTreeData.find((item) => item.key === key);
-    return item ? [item] : [];
+  public deepMap<T extends Omit<ITreeData, "children" | "key">>(
+    callback: (item: ITreeData) => T,
+  ): T[] {
+    const handle = <T extends Omit<ITreeData, "children">>(
+      treeData: ITreeData[],
+      callback: (item: ITreeData) => T,
+    ): T[] => {
+      return treeData.map((item) => ({
+        ...callback(item),
+        key: item.key,
+        children: item.children
+          ? handle(item.children, callback)
+          : item.children,
+      }));
+    };
+
+    return handle(this.processTreeData, callback);
   }
 
   private process(
@@ -125,6 +140,11 @@ const treeData: ITreeData[] = [
 
 const proTree = createProTree(treeData, {});
 
-console.log(proTree);
-console.log(proTree.pathBefore(211111));
-console.log(proTree.pathAfter(1));
+console.log(
+  proTree.deepMap((item) => ({
+    path: item.key,
+  })),
+);
+
+// console.log(proTree.pathBefore(211111));
+// console.log(proTree.pathAfter(1));

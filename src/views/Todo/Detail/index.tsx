@@ -12,8 +12,6 @@ const TodoDetail: React.FC<IProps> = (props) => {
 
   const params = useParams();
 
-  console.log(params);
-
   return (
     <PageWrapper>
       <div>TodoDetail</div>

@@ -50,15 +50,6 @@ const SiderContainer = styled.div`
   overflow: auto;
 `;
 
-// const menu: MenuProps["items"] = [
-//   { key: "/dashboard/home", label: "首页" },
-//   {
-//     key: "/dashboard/todo",
-//     label: "待办",
-//     children: [{ key: "/dashboard/todo", label: "列表" }],
-//   },
-// ];
-
 const Sider: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -75,15 +66,14 @@ const Sider: React.FC = () => {
     setOpenKeys(props);
   };
 
+  // console.log(routes);
+
   const menu = [
     { label: "首页", key: "/dashboard" },
     {
       label: "待办",
       key: "todo",
-      children: [
-        { label: "列表", key: "/dashboard/todo" },
-        { label: "详情", key: "/dashboard/todo/123" },
-      ],
+      children: [{ label: "列表", key: "/dashboard/todo" }],
     },
   ];
 
@@ -91,6 +81,7 @@ const Sider: React.FC = () => {
     setSelectedKeys([location.pathname]);
     const proTree = createProTree(menu);
     const path = proTree.pathBefore(location.pathname) as string[];
+
     setOpenKeys(path);
   }, []);
 

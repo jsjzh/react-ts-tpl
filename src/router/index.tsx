@@ -16,7 +16,11 @@ import Home from "@/views/Home";
 import TodoList from "@/views/Todo/List";
 import TodoDetail from "@/views/Todo/Detail";
 
-export const routes: RouteObject[] = [
+export type IRoute = RouteObject & {
+  hidden?: boolean;
+};
+
+export const routes: IRoute[] = [
   {
     path: "/",
     element: <LayoutRoot />,
