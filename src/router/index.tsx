@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-import { ReactNode } from "react";
-import { createBrowserRouter, json, RouteObject } from "react-router-dom";
+import { createBrowserRouter, RouteObject } from "react-router-dom";
 
 import LayoutRoot from "@/views/_layouts/Root";
 import LayoutBlank from "@/views/_layouts/Blank";
@@ -12,9 +10,10 @@ import Error500 from "@/views/_errors/500";
 import ErrorBoundary from "@/views/_errors/ErrorBoundary";
 
 import Login from "@/views/Login";
-import Home from "@/views/Home";
-import TodoList from "@/views/Todo/List";
-import TodoDetail from "@/views/Todo/Detail";
+
+import Home from "@/views/dashboard/Home";
+import TodoList from "@/views/dashboard/todo/List";
+import TodoDetail from "@/views/dashboard/todo/Detail";
 
 export type IRoute = RouteObject & {
   hidden?: boolean;

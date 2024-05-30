@@ -88,63 +88,63 @@ const createProTree = (treeData: ITreeData[], options?: IOptions): ProTree => {
 
 export default createProTree;
 
-const treeData: ITreeData[] = [
-  {
-    key: 1,
-    children: [
-      { key: 11 },
-      { key: 12 },
-      { key: 13, children: [{ key: 131, children: [{ key: 1311 }] }] },
-      { key: 14 },
-    ],
-  },
-  {
-    key: 2,
-    children: [
-      {
-        key: 21,
-        children: [
-          {
-            key: 211,
-            children: [
-              {
-                key: 2111,
-                children: [{ key: 21111, children: [{ key: 211111 }] }],
-              },
-            ],
-          },
-        ],
-      },
-      { key: 22 },
-      { key: 23, children: [{ key: 231 }] },
-      { key: 24, children: [{ key: 241 }] },
-    ],
-  },
-  { key: 3, children: [{ key: 31 }, { key: 32 }, { key: 33 }, { key: 34 }] },
-  {
-    key: 4,
-    children: [
-      { key: 41, children: [{ key: 411, children: [{ key: 4111 }] }] },
-      { key: 42 },
-      {
-        key: 43,
-        children: [
-          { key: 431, children: [{ key: 4311, children: [{ key: 43111 }] }] },
-        ],
-      },
-      { key: 44 },
-    ],
-  },
-  { key: 5, children: [{ key: 51 }, { key: 52 }, { key: 53 }, { key: 54 }] },
-];
+// const treeData: ITreeData[] = [
+//   {
+//     key: 1,
+//     children: [
+//       { key: 11 },
+//       { key: 12 },
+//       { key: 13, children: [{ key: 131, children: [{ key: 1311 }] }] },
+//       { key: 14 },
+//     ],
+//   },
+//   {
+//     key: 2,
+//     children: [
+//       {
+//         key: 21,
+//         children: [
+//           {
+//             key: 211,
+//             children: [
+//               {
+//                 key: 2111,
+//                 children: [{ key: 21111, children: [{ key: 211111 }] }],
+//               },
+//             ],
+//           },
+//         ],
+//       },
+//       { key: 22 },
+//       { key: 23, children: [{ key: 231 }] },
+//       { key: 24, children: [{ key: 241 }] },
+//     ],
+//   },
+//   { key: 3, children: [{ key: 31 }, { key: 32 }, { key: 33 }, { key: 34 }] },
+//   {
+//     key: 4,
+//     children: [
+//       { key: 41, children: [{ key: 411, children: [{ key: 4111 }] }] },
+//       { key: 42 },
+//       {
+//         key: 43,
+//         children: [
+//           { key: 431, children: [{ key: 4311, children: [{ key: 43111 }] }] },
+//         ],
+//       },
+//       { key: 44 },
+//     ],
+//   },
+//   { key: 5, children: [{ key: 51 }, { key: 52 }, { key: 53 }, { key: 54 }] },
+// ];
 
-const proTree = createProTree(treeData, {});
+// const proTree = createProTree(treeData, {});
 
-console.log(
-  proTree.map((item) => ({
-    path: item.key,
-  })),
-);
+// console.log(
+//   proTree.map((item) => ({
+//     path: item.key,
+//   })),
+// );
 
 // console.log(proTree.pathBefore(211111));
 // console.log(proTree.pathAfter(1));

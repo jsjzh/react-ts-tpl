@@ -1,5 +1,5 @@
-import useApp, { AppStore } from "./app";
-import useDemo, { DemoStore } from "./demo";
+import useGlobalStore, { GlobalStore } from "./global";
+import useDashboardStore, { DashboardStore } from "./dashboard";
 
-export { useApp, useDemo };
-export type { AppStore, DemoStore };
+export { useGlobalStore, useDashboardStore };
+export type { GlobalStore, DashboardStore };

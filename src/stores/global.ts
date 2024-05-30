@@ -2,8 +2,8 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { devtools, persist } from "zustand/middleware";
 
-interface AppData {
-  App: {
+interface GlobalData {
+  Global: {
     pageData: {};
     pageStatus: {};
     pageQuery: {};
@@ -11,30 +11,30 @@ interface AppData {
   };
 }
 
-interface AppFunc {
-  updateApp: (draft: (next: AppData["App"]) => void) => void;
+interface GlobalFunc {
+  updateGlobal: (draft: (next: GlobalData["Global"]) => void) => void;
 }
 
-const useAppStore = create<AppStore>()(
+const useGlobalStore = create<GlobalStore>()(
   // devtools(
   // persist(
   immer((set, get, api) => {
     return {
-      App: {
+      Global: {
         pageData: {},
         pageStatus: {},
         pageQuery: {},
         pageTempData: {},
       },
-      updateApp: (fn) => set((draft) => fn(draft.App)),
+      updateGlobal: (fn) => set((draft) => fn(draft.Global)),
     };
   }),
-  // { name: "useAppStore" },
+  // { name: "useGlobalStore" },
   // ),
-  // { name: "useAppStore" },
+  // { name: "useGlobalStore" },
   // ),
 );
 
-export type AppStore = AppData & AppFunc;
+export type GlobalStore = GlobalData & GlobalFunc;
 
-export default useAppStore;
+export default useGlobalStore;

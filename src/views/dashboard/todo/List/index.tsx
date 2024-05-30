@@ -1,14 +1,14 @@
 import React from "react";
 import { useImmer } from "use-immer";
 import PageWrapper from "@/components/PageWrapper";
-import useDemoStore from "@/stores/demo";
+import { useDashboardStore } from "@/stores";
 
 interface IProps {}
 
-const Home: React.FC<IProps> = (props) => {
-  const { db, update } = useDemoStore((state) => ({
-    db: state.Demo,
-    update: state.updateDemo,
+const TodoList: React.FC<IProps> = (props) => {
+  const { db, update } = useDashboardStore((state) => ({
+    db: state.Todo,
+    update: state.updateTodo,
   }));
 
   const [pageData, updatePageData] = useImmer<{}>({});
@@ -17,9 +17,9 @@ const Home: React.FC<IProps> = (props) => {
 
   return (
     <PageWrapper>
-      <div>home</div>
+      <div>TodoList</div>
     </PageWrapper>
   );
 };
 
-export default Home;
+export default TodoList;

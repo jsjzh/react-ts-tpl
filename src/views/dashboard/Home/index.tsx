@@ -1,22 +1,25 @@
 import React from "react";
 import { useImmer } from "use-immer";
 import PageWrapper from "@/components/PageWrapper";
-import { useParams } from "react-router-dom";
+import { useDashboardStore } from "@/stores";
 
 interface IProps {}
 
-const TodoDetail: React.FC<IProps> = (props) => {
+const Home: React.FC<IProps> = (props) => {
+  const { db, update } = useDashboardStore((state) => ({
+    db: state.Home,
+    update: state.updateHome,
+  }));
+
   const [pageData, updatePageData] = useImmer<{}>({});
   const [pageStatus, updatePageStatus] = useImmer<{}>({});
   const [pageTempData, updatePageTempData] = useImmer<{}>({});
 
-  const params = useParams();
-
   return (
     <PageWrapper>
-      <div>TodoDetail</div>
+      <div>home</div>
     </PageWrapper>
   );
 };
 
-export default TodoDetail;
+export default Home;

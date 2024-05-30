@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, useLocation, useNavigate, useRoutes } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { Menu, MenuItemProps, MenuProps } from "antd";
-import { routes } from "@/router";
+import { Menu, MenuProps } from "antd";
 import createProTree from "@/shared/createProTree";
 
 const styles: { [k: string]: string | number } = {
