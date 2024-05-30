@@ -3,7 +3,8 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { Menu, MenuProps } from "antd";
-import createProTree from "@/shared/createProTree";
+import { path } from "@/shared/treeUtils";
+import { routes } from "@/router";
 
 const styles: { [k: string]: string | number } = {
   headerHeight: "4rem",
@@ -65,7 +66,7 @@ const Sider: React.FC = () => {
     setOpenKeys(props);
   };
 
-  // console.log(routes);
+  console.log(routes);
 
   const menu = [
     { label: "首页", key: "/dashboard" },
@@ -78,10 +79,8 @@ const Sider: React.FC = () => {
 
   useEffect(() => {
     setSelectedKeys([location.pathname]);
-    const proTree = createProTree(menu);
-    const path = proTree.path(location.pathname) as string[];
-
-    setOpenKeys(path);
+    const menuPath = path(menu, location.pathname) as string[];
+    setOpenKeys(menuPath);
   }, []);
 
   return (

@@ -13,7 +13,7 @@ interface IProcessTreeData extends ITreeData {
   __parentKey: Key | null;
 }
 
-const process = (treeData: ITreeData[]) => {
+export const format = (treeData: ITreeData[]) => {
   const safeTreeData = clone(treeData);
 
   const handle = (
@@ -72,8 +72,8 @@ export const path = (
   key: Key | null,
 ): (Key | null)[] => {
   const safeTreeData = clone(treeData);
-  const processTreeData = process(safeTreeData);
-  const flatTreeData = flat(processTreeData);
+  const formatTreeData = format(safeTreeData);
+  const flatTreeData = flat(formatTreeData);
 
   const handle = (_treeData: ITreeData[], key: Key | null): (Key | null)[] => {
     const item = _treeData.find((item) => item.key === key);
