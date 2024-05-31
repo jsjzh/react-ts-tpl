@@ -39,8 +39,19 @@ const HeaderContainer = styled.div`
   z-index: 999;
 `;
 
+const HeaderIcon = styled.span`
+  font-weight: 600;
+  padding: 0.4rem;
+  border-radius: 8px;
+  background-color: #eee;
+`;
+
 const Header: React.FC = () => {
-  return <HeaderContainer>123</HeaderContainer>;
+  return (
+    <HeaderContainer>
+      <HeaderIcon>REACT-TS-TPL</HeaderIcon>
+    </HeaderContainer>
+  );
 };
 
 const SiderContainer = styled.div`
