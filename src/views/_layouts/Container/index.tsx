@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { Menu, MenuProps } from "antd";
 import { path } from "@/shared/treeUtils";
-import { routes } from "@/router";
+import { menus } from "@/router";
 
 const styles: { [k: string]: string | number } = {
   headerHeight: "4rem",
@@ -66,22 +66,15 @@ const Sider: React.FC = () => {
     setOpenKeys(props);
   };
 
-  const parseRoutes = () => {};
-
-  console.log(routes);
-
-  const menu = [
-    { label: "首页", key: "/dashboard" },
-    {
-      label: "待办",
-      key: "todo",
-      children: [{ label: "列表", key: "/dashboard/todo" }],
-    },
-  ];
-
   useEffect(() => {
     setSelectedKeys([location.pathname]);
-    const menuPath = path(menu, location.pathname) as string[];
+    // TODO
+    // 如果仅仅解析 menus
+    // 那对于 todo/detail 就无法定位至 todo/list
+    // 需要对 routes 进行解析
+    // 但是 routes 又包含了 layout 的信息
+    // 则可能会获取到不正确的 path
+    const menuPath = path(menus, location.pathname) as string[];
     setOpenKeys(menuPath);
   }, []);
 
@@ -90,7 +83,7 @@ const Sider: React.FC = () => {
       <Menu
         mode="inline"
         style={{ height: "100%" }}
-        items={menu}
+        items={menus}
         selectedKeys={selectedKeys}
         openKeys={openKeys}
         onClick={handleClick}

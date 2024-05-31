@@ -1,6 +1,6 @@
 import { clone as RClone } from "ramda";
 
-type Key = string | number;
+type Key = string;
 
 interface ITreeData {
   key: Key;

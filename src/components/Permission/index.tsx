@@ -1,5 +1,5 @@
 import React from "react";
-import { SKIP_AUTHENTICATION } from "@/shared/constants";
+import { SKIP_AUTHENTICATION } from "@/shared/const";
 
 interface IProps {
   code: string;

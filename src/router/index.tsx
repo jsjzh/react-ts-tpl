@@ -12,15 +12,10 @@ import ErrorBoundary from "@/views/_errors/ErrorBoundary";
 import Login from "@/views/Login";
 
 import Home from "@/views/dashboard/Home";
-import TodoList from "@/views/dashboard/todo/List";
-import TodoDetail from "@/views/dashboard/todo/Detail";
+import Todo from "@/views/dashboard/todo";
+import { HomeFilled, ToolFilled } from "@ant-design/icons";
 
-export type IRoute = RouteObject & {
-  title?: string;
-  hidden?: boolean;
-};
-
-export const routes: IRoute[] = [
+export const routes: RouteObject[] = [
   {
     path: "/",
     element: <LayoutRoot />,
@@ -32,8 +27,7 @@ export const routes: IRoute[] = [
         element: <LayoutContainer />,
         children: [
           { index: true, element: <Home /> },
-          { path: "/dashboard/todo", element: <TodoList /> },
-          { path: "/dashboard/todo/:id", element: <TodoDetail /> },
+          { path: "/dashboard/todo", element: <Todo /> },
         ],
       },
       { path: "/403", element: <Error403 /> },
@@ -42,6 +36,19 @@ export const routes: IRoute[] = [
       { path: "*", element: <Error404 /> },
     ],
   },
+];
+
+export interface IMenus {
+  key: string;
+  label: string;
+  hidden?: boolean;
+  icon?: React.ReactNode;
+  children?: IMenus[];
+}
+
+export const menus: IMenus[] = [
+  { key: "/dashboard", label: "首页", icon: <HomeFilled /> },
+  { key: "/dashboard/todo", label: "待办", icon: <ToolFilled /> },
 ];
 
 export default createBrowserRouter(routes);
