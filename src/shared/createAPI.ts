@@ -4,7 +4,6 @@ import qs from "query-string";
 import JSONP from "jsonp";
 import ExtendableError from "./error";
 import { notification } from "antd";
-import { downloadFile, transUrl } from "./utils";
 import queryString from "query-string";
 
 class APIError extends ExtendableError {
@@ -186,7 +185,7 @@ const createAPI = (host: string, apiConfig: IRequestConfig = {}) => {
       }
 
       if (Number(data.code) === 401) {
-        window.location.href = transUrl();
+        window.location.href = `${window.location.origin}${window.location.pathname}`;
       }
 
       if (showNotification) {
@@ -243,7 +242,19 @@ const createAPI = (host: string, apiConfig: IRequestConfig = {}) => {
         realFileName = decodeURIComponent(realFileName);
       }
 
-      downloadFile(realFileName, resp.data);
+      try {
+        const aElement = document.createElement("a");
+        document.body.appendChild(aElement);
+        aElement.setAttribute("download", fileName);
+        const href = URL.createObjectURL(resp.data);
+        aElement.href = href;
+        aElement.click();
+        URL.revokeObjectURL(href);
+        document.body.removeChild(aElement);
+      } catch (error) {
+        throw new APIError("下载文件时发生错误");
+      }
+
       return true;
     });
   }

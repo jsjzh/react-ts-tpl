@@ -44,40 +44,6 @@ export const isPhoneNumber = (phone: number | string) =>
 
 export const encodeBase64 = (pwd: string) => encode(pwd);
 
-/**
- * 下载Blob数据为指定名称的文件
- * @param fileName 文件名，包括扩展名
- * @param blob 要下载的Blob对象
- */
-export const downloadFile = (fileName: string, blob: Blob): void => {
-  try {
-    // 创建隐藏的<a>标签
-    const aElement = document.createElement("a");
-    document.body.appendChild(aElement); // 将元素临时添加到DOM，以便能触发点击事件
-
-    // 设置下载属性和文件名
-    aElement.setAttribute("download", fileName);
-
-    // 创建Blob URL供下载使用
-    const href = URL.createObjectURL(blob);
-    aElement.href = href;
-
-    // 设置目标为新窗口打开，避免页面跳转（可选，根据需求决定是否保留）
-    // aElement.setAttribute("target", "_blank"); // 注释此行，根据实际情况决定是否需要新窗口打开
-
-    // 模拟点击以触发下载
-    aElement.click();
-
-    // 清理释放创建的Blob URL，避免内存泄漏
-    URL.revokeObjectURL(href);
-
-    // 完成后从DOM中移除临时元素
-    document.body.removeChild(aElement);
-  } catch (error) {
-    console.error("下载文件时发生错误:", error);
-  }
-};
-
 export const createInitPageData = <T>(
   values: Partial<BASE.PaginationResp<T>> = {},
 ): BASE.PaginationResp<T> => ({
@@ -102,8 +68,3 @@ export const containerScrollToTop = () => {
   const container = document.getElementById("globalContentContainer");
   container?.scrollTo({ top: 0, behavior: "smooth" });
 };
-
-export const transUrl = (hash?: string) =>
-  hash
-    ? `${window.location.origin}${window.location.pathname}#${hash}`
-    : `${window.location.origin}${window.location.pathname}`;
