@@ -1,5 +1,9 @@
 import createDB from "@/shared/createDB";
 
+interface GlobalData {
+  
+}
+
 const db = createDB({ name: "global" });
 
 export const appData = {
