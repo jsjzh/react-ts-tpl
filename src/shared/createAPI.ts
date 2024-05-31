@@ -6,11 +6,13 @@ import ExtendableError from "./error";
 import { notification } from "antd";
 import queryString from "query-string";
 
-class APIError extends ExtendableError {
-  public constructor(message = "") {
-    super(message);
-  }
-}
+const VALID_IP_REGEXP =
+  /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])/;
+
+const VALID_HOST_REGEXP =
+  /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])/;
+
+const { protocol } = window.location;
 
 type IRequestConfig = AxiosRequestConfig & {
   /**
@@ -40,10 +42,11 @@ type IRequestConfig = AxiosRequestConfig & {
   handleResp?: (resp: any) => any;
 };
 
-const VALID_IP_REGEXP =
-  /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])/;
-const VALID_HOST_REGEXP =
-  /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])/;
+class APIError extends ExtendableError {
+  public constructor(message = "") {
+    super(message);
+  }
+}
 
 export const getAPIPrefix = (str: string) => {
   let val = str || "/";
@@ -72,7 +75,6 @@ export const getAPIUrl = (prefix: string, endpoint: string) => {
 
 const noop = () => {};
 
-const { protocol } = window.location;
 const { CancelToken } = axios;
 
 /**
