@@ -66,6 +66,8 @@ const Sider: React.FC = () => {
     setOpenKeys(props);
   };
 
+  const parseRoutes = () => {};
+
   console.log(routes);
 
   const menu = [

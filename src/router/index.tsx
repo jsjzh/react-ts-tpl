@@ -16,6 +16,7 @@ import TodoList from "@/views/dashboard/todo/List";
 import TodoDetail from "@/views/dashboard/todo/Detail";
 
 export type IRoute = RouteObject & {
+  title?: string;
   hidden?: boolean;
 };
 

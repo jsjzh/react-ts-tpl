@@ -25,11 +25,11 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <ConfigProvider locale={zhCN}>
       <StyleProvider transformers={[legacyLogicalPropertiesTransformer]}>
         <RouterProvider router={router} />
       </StyleProvider>
     </ConfigProvider>
-  </React.StrictMode>,
+  // </React.StrictMode>,
 );
