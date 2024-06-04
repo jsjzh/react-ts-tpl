@@ -35,11 +35,19 @@ class API {
   ) {
     const queryStr = queryString.stringify(data);
     const headers = new Headers();
-    headers.append("content-type", "application/json");
+    headers.append("content-type", "application/x-www-form-urlencoded");
     return this.request(`${endpoint}?${queryStr}`, { method: "get", headers });
   }
 
-  public postJson() {}
+  public postJson(
+    endpoint: string,
+    data: Record<string | number, any> = {},
+    config: IAPIConfig = {},
+  ) {
+    const headers = new Headers();
+    headers.append("content-type", "application/json");
+    return this.request(endpoint, { method: "post", headers });
+  }
 
   public request<T>(endpoint: string, config: IAPIConfig) {
     const url = new URL(endpoint, this.hostURL);
