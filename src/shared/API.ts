@@ -53,6 +53,20 @@ class API {
     });
   }
 
+  public putForm(endpoint: string, data: FormData, config: IAPIConfig = {}) {
+    const headers = new Headers();
+    // multipart/form-data
+    headers.append("content-type", "application/json");
+    return this.request(endpoint, {
+      method: "put",
+      headers,
+      // data: data instanceof FormData ? data : queryString.stringify(data),
+      body: data,
+    });
+  }
+
+  public downloadFile() {}
+
   public request<T>(endpoint: string, config: IAPIConfig) {
     const url = new URL(endpoint, this.hostURL);
     const controller = new AbortController();
