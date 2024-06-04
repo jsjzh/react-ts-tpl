@@ -227,12 +227,15 @@ class API {
 
     const promise: any = fetch(url, currentConfig)
       .then((response) => {
-        // 299 >= response.status >= 200
+        // 200 <= response.status <= 299
         if (response.ok) {
           // 用来处理 json 或者 blob 返回
           return handleResponse && handleResponse(response);
         } else {
-          // response.status >= 400
+          // 400 <= response.status <= 500
+          // 如果 status 是 400 至 500
+          // 则代表客户端或者服务端出错，此时需要报错
+          // TODO antd 对于无权限好像也是返回的 4xx，需要看看怎么兼容
           if (response.status >= 400) {
             if (showNotification) {
               notification.error({
@@ -241,7 +244,9 @@ class API {
             }
             throw new Error(`[${response.status}] 请求错误 ${response.url}`);
           } else {
-            // 400 > response.status > 200
+            // 200 < response.status < 400
+            // 否则的话，就是 3xx 的错，这一般是重定向
+            // 需要用户自行处理，可能是重定向到登录页
             handleStatus &&
               handleStatus(
                 response.status,
