@@ -46,7 +46,11 @@ class API {
   ) {
     const headers = new Headers();
     headers.append("content-type", "application/json");
-    return this.request(endpoint, { method: "post", headers });
+    return this.request(endpoint, {
+      method: "post",
+      headers,
+      body: JSON.stringify(data),
+    });
   }
 
   public request<T>(endpoint: string, config: IAPIConfig) {
