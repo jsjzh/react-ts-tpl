@@ -24,12 +24,14 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
 
+import "@/shared/API";
+
 root.render(
   // <React.StrictMode>
-    <ConfigProvider locale={zhCN}>
-      <StyleProvider transformers={[legacyLogicalPropertiesTransformer]}>
-        <RouterProvider router={router} />
-      </StyleProvider>
-    </ConfigProvider>
+  <ConfigProvider locale={zhCN}>
+    <StyleProvider transformers={[legacyLogicalPropertiesTransformer]}>
+      <RouterProvider router={router} />
+    </StyleProvider>
+  </ConfigProvider>,
   // </React.StrictMode>,
 );

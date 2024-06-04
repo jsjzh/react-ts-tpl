@@ -1,169 +1,126 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import { notification } from "antd";
 import queryString from "query-string";
 
-export interface IAPIConfig extends AxiosRequestConfig {
+interface IAPIConfig extends RequestInit {
   showNotification?: boolean;
-  // handleOption?: (option: AxiosRequestConfig) => any;
-  // handleResp?: (resp: any) => any;
+  handleResponse?: (response: Response) => any;
+  handleData?: (data: any) => any;
+  handleStatus?: (status: number, data: any) => any;
 }
 
-// axios#request(config)
-// axios#get(url[, config])
-// axios#delete(url[, config])
-// axios#head(url[, config])
-// axios#options(url[, config])
-// axios#post(url[, data[, config]])
-// axios#put(url[, data[, config]])
-// axios#patch(url[, data[, config]])
-// axios#getUri([config])
+type PPromise<T = any> = Promise<T> & {
+  cancel: () => void;
+};
 
 class API {
-  public instance: AxiosInstance;
-
-  public constructor(baseURL: string, baseConfig: IAPIConfig) {
-    this.instance = axios.create({ baseURL });
-
-    // this.instance.get
-    // this.instance.post
-    // this.instance.put
-    // this.instance.patch
-    // this.instance.delete
-
-    // this.instance.postForm
-    // this.instance.putForm
-    // this.instance.patchForm
-
-    // this.instance.head
-    // this.instance.options
-    // this.instance.getUri
+  public static handleJson(response: Response) {
+    return response.json();
+  }
+  public static handleBlob(response: Response) {
+    return response.blob();
   }
 
-  public getJSON(
+  public hostURL: URL;
+  public baseConfig: IAPIConfig;
+
+  public constructor(host: string, config: IAPIConfig) {
+    this.hostURL = new URL(host);
+    this.baseConfig = config;
+  }
+
+  public getJson(
     endpoint: string,
     data: Record<string | number, any> = {},
-    config?: IAPIConfig,
+    config: IAPIConfig = {},
   ) {
-    return this.request({
-      ...config,
-      url: endpoint,
-      method: "get",
-      params: data,
-      paramsSerializer: (params) => queryString.stringify(params),
-    });
+    const queryStr = queryString.stringify(data);
+    const headers = new Headers();
+    headers.append("content-type", "application/json");
+    return this.request(`${endpoint}?${queryStr}`, { method: "get", headers });
   }
 
-  public postJSON(
-    endpoint: string,
-    data: Record<string | number, any> = {},
-    config?: IAPIConfig,
-  ) {
-    return this.request({
+  public postJson() {}
+
+  public request<T>(endpoint: string, config: IAPIConfig) {
+    const url = new URL(endpoint, this.hostURL);
+    const controller = new AbortController();
+
+    const {
+      showNotification,
+      // TODO
+      handleResponse = API.handleJson,
+      handleStatus,
+      handleData = (standard: any) => standard.data,
+      ...currentConfig
+    } = {
+      ...this.baseConfig,
       ...config,
-      url: endpoint,
-      method: "post",
-      data,
-    });
+      ...controller,
+    };
+
+    const promise: any = fetch(url, {
+      mode: "cors",
+      credentials: "include",
+      cache: "no-cache",
+      // headers: {},
+      ...currentConfig,
+    })
+      .then((response) => {
+        // 299 >= response.status >= 200
+        if (response.ok) {
+          // 用来处理 json 或者 blob 返回
+          return handleResponse(response);
+        } else {
+          // response.status >= 400
+          if (response.status >= 400) {
+            if (showNotification) {
+              notification.error({
+                message: `请求错误 ${response.status}: ${response.url}`,
+              });
+            }
+            throw new Error(`[${response.status}] 请求错误 ${response.url}`);
+          } else {
+            // 400 > response.status > 200
+            handleStatus &&
+              handleStatus(response.status, handleResponse(response));
+          }
+        }
+      })
+      .then((standard) => {
+        if (standard) {
+          return handleData(standard);
+        }
+      })
+      .catch((reason) => {
+        if (showNotification) {
+          notification.error({ message: `${reason || "未知"}` });
+        }
+
+        throw new Error(`请求失败 ${reason}`);
+      });
+
+    promise.cancel = () => {
+      controller.abort();
+    };
+
+    return promise as PPromise<T>;
   }
-
-  public putJSON(
-    endpoint: string,
-    data: Record<string | number, any> = {},
-    config?: IAPIConfig,
-  ) {
-    return this.request({
-      ...config,
-      url: endpoint,
-      method: "put",
-      data,
-    });
-  }
-
-  public patchJSON(
-    endpoint: string,
-    data: Record<string | number, any> = {},
-    config?: IAPIConfig,
-  ) {
-    return this.request({
-      ...config,
-      url: endpoint,
-      method: "patch",
-      data,
-    });
-  }
-
-  public deleteJSON(
-    endpoint: string,
-    data: Record<string | number, any> = {},
-    config?: IAPIConfig,
-  ) {
-    return this.request({
-      ...config,
-      url: endpoint,
-      method: "delete",
-      data,
-    });
-  }
-
-  // TODO
-  public headJSON(
-    endpoint: string,
-    data: Record<string | number, any> = {},
-    config?: IAPIConfig,
-  ) {
-    return this.request({
-      ...config,
-      url: endpoint,
-      method: "head",
-      data: data,
-    });
-  }
-
-  public postForm(
-    endpoint: string,
-    data: FormData | Record<string | number, any> = {},
-    config?: IAPIConfig,
-  ) {
-    return this.request({
-      ...config,
-      url: endpoint,
-      method: "post",
-      data: data instanceof FormData ? data : queryString.stringify(data),
-    });
-  }
-
-  public putForm(
-    endpoint: string,
-    data: FormData | Record<string | number, any> = {},
-    config?: IAPIConfig,
-  ) {
-    return this.request({
-      ...config,
-      url: endpoint,
-      method: "put",
-      data: data instanceof FormData ? data : queryString.stringify(data),
-    });
-  }
-
-  public patchForm(
-    endpoint: string,
-    data: FormData | Record<string | number, any> = {},
-    config?: IAPIConfig,
-  ) {
-    return this.request({
-      ...config,
-      url: endpoint,
-      method: "patch",
-      data: data instanceof FormData ? data : queryString.stringify(data),
-    });
-  }
-
-  public getDownloadFile() {}
-
-  public postFile() {}
-
-  public putFile() {}
-
-  public jsonp() {}
-
-  private request<T>(reqConfig: IAPIConfig) {}
 }
+
+export default API;
+
+export const craeteAPI = (
+  host: string,
+  config: IAPIConfig = {
+    showNotification: true,
+  },
+) => new API(host, config);
+
+// console.log(new URL("http://www.baidu.com"));
+
+console.log(
+  queryString.stringifyUrl({
+    url: "http://www.baidu.com",
+    query: { name: 123, demO: [123, "123"] },
+  }),
+);
