@@ -180,7 +180,7 @@ class API {
     data: Record<string | number, any> = {},
     config: IAPIConfig = {},
   ) {
-    return this.request<{ blob: Blob; filename?: string }>(
+    return this.request<{ blob: Blob; filename: string }>(
       this.formatEndpoint(endpoint, data),
       {
         method: "get",
@@ -198,7 +198,7 @@ class API {
   ) {
     const headers = new Headers();
     headers.append("content-type", "application/json;charset=utf-8");
-    return this.request<{ blob: Blob; filename?: string }>(endpoint, {
+    return this.request<{ blob: Blob; filename: string }>(endpoint, {
       method: "post",
       headers,
       body: JSON.stringify(data),
@@ -307,7 +307,7 @@ class API {
   // MUJI_APP_SSO_HOST=devsso.sqaproxy.dasouche-inc.net
   // return api.jsonp<T.ISSOUserInfo>('httpApi/getAuthZ.jsonp');
 
-  public jsonp(
+  public jsonp<T = any>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IJsonpConfig = {},
@@ -317,9 +317,20 @@ class API {
     const id = config.name || `${prefix}${API.jsonpCount++}`;
     const param = config.param || "callback";
     const timeout = config.timeout ? config.timeout : 60000;
-    const target = document.getElementsByTagName("script")[0] || document.head;
     let script;
     let timer;
+
+    const request = (url: string) => {
+      const target =
+        document.getElementsByTagName("script")[0] || document.head;
+      const script = document.createElement("script");
+      script.src = url;
+      target.parentNode!.insertBefore(script, target);
+
+      script.addEventListener("error", (e) => {
+        console.log("error", e);
+      });
+    };
 
     const promise = new Promise((resolve, reject) => {
       const callback = (data: any) => {
@@ -348,12 +359,7 @@ class API {
     data: Record<string | number, any> = {},
   ) {
     const queryStr = queryString.stringify(data);
-
-    if (queryStr) {
-      return `${endpoint}?${queryStr}`;
-    } else {
-      return endpoint;
-    }
+    return queryStr ? `${endpoint}?${queryStr}` : endpoint;
   }
 }
 
