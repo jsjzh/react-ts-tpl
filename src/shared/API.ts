@@ -3,12 +3,11 @@ import queryString from "query-string";
 
 interface IPowerfulConfig {
   showNotification?: boolean;
-  handleOk?: (response: Response) => any;
+  handleOk?: (response: Response) => Promise<any>;
   handleNotOk?: (status: number, response: Response) => any;
   handleData?: (data: any) => any;
 }
 
-// eslint-disable-next-line no-undef
 type IAPIConfig = IPowerfulConfig & RequestInit;
 
 type IJsonpConfig = IPowerfulConfig & {
@@ -22,14 +21,44 @@ type IPromise<T = any> = Promise<T> & {
   cancel: () => void;
 };
 
+type IWindow = typeof window & { [k: string]: any };
+
+// TODO 上传文件，上传大文件
 class API {
   private static jsonpCount = 0;
+
+  // response.text()：得到文本字符串。
+  // response.json()：得到 JSON 对象。
+  // response.blob()：得到二进制 Blob 对象。
+  // response.arrayBuffer()：得到二进制 ArrayBuffer 对象。
+  // Service Worker
+  // response.formData()：得到 FormData 表单对象。
 
   public static handleJson(response: Response) {
     return response.json();
   }
-  public static handleBlob(response: Response) {
-    return response.blob();
+
+  public static async handleBlob(response: Response) {
+    const blob = await response.blob();
+
+    const objectUrl = URL.createObjectURL(blob);
+    const uuidUrl = objectUrl.toString();
+    let filename = uuidUrl.substring(uuidUrl.lastIndexOf("/") + 1);
+    URL.revokeObjectURL(objectUrl);
+
+    const contentDisposition = response.headers.get("content-disposition");
+
+    if (contentDisposition) {
+      const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      const matches =
+        contentDisposition && filenameRegex.exec(contentDisposition);
+      if (matches !== null && matches[1]) {
+        filename = matches[1].replace(/['"]/g, "");
+        filename = decodeURIComponent(filename);
+      }
+    }
+
+    return { blob, filename };
   }
 
   public static handleStatus(status: number, response: Response) {
@@ -58,8 +87,7 @@ class API {
     data: Record<string | number, any> = {},
     config: IAPIConfig = {},
   ) {
-    const queryStr = queryString.stringify(data);
-    return this.request<T>(`${endpoint}?${queryStr}`, {
+    return this.request<T>(this.formatEndpoint(endpoint, data), {
       method: "get",
       handleOk: API.handleJson,
       ...config,
@@ -72,7 +100,7 @@ class API {
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
-    headers.append("content-type", "application/json");
+    headers.append("content-type", "application/json;charset=utf-8");
     return this.request<T>(endpoint, {
       method: "post",
       headers,
@@ -88,7 +116,7 @@ class API {
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
-    headers.append("content-type", "application/json");
+    headers.append("content-type", "application/json;charset=utf-8");
     return this.request<T>(endpoint, {
       method: "put",
       headers,
@@ -104,7 +132,7 @@ class API {
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
-    headers.append("content-type", "application/json");
+    headers.append("content-type", "application/json;charset=utf-8");
     return this.request<T>(endpoint, {
       method: "patch",
       headers,
@@ -120,7 +148,7 @@ class API {
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
-    headers.append("content-type", "application/json");
+    headers.append("content-type", "application/json;charset=utf-8");
     return this.request<T>(endpoint, {
       method: "delete",
       headers,
@@ -130,18 +158,52 @@ class API {
     });
   }
 
+  // TODO 应该只返回 header，需要验证
   public headJson<T = any>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
-    headers.append("content-type", "application/json");
+    headers.append("content-type", "application/json;charset=utf-8");
     return this.request<T>(endpoint, {
       method: "head",
       headers,
       body: JSON.stringify(data),
       handleOk: API.handleJson,
+      ...config,
+    });
+  }
+
+  public getBlob(
+    endpoint: string,
+    data: Record<string | number, any> = {},
+    config: IAPIConfig = {},
+  ) {
+    return this.request<{ blob: Blob; filename?: string }>(
+      this.formatEndpoint(endpoint, data),
+      {
+        method: "get",
+        handleOk: API.handleBlob,
+        handleData: (blob) => blob,
+        ...config,
+      },
+    );
+  }
+
+  public postBlob(
+    endpoint: string,
+    data: Record<string | number, any> = {},
+    config: IAPIConfig = {},
+  ) {
+    const headers = new Headers();
+    headers.append("content-type", "application/json;charset=utf-8");
+    return this.request<{ blob: Blob; filename?: string }>(endpoint, {
+      method: "post",
+      headers,
+      body: JSON.stringify(data),
+      handleOk: API.handleBlob,
+      handleData: (blob) => blob,
       ...config,
     });
   }
@@ -194,46 +256,13 @@ class API {
     });
   }
 
-  public getBlob<T = any>(
-    endpoint: string,
-    data: Record<string | number, any> = {},
-    config: IAPIConfig = {},
-  ) {
-    const queryStr = queryString.stringify(data);
-    const headers = new Headers();
-    headers.append("content-type", "application/json");
-    return this.request<T>(`${endpoint}?${queryStr}`, {
-      method: "get",
-      headers,
-      handleOk: API.handleBlob,
-      ...config,
-    });
-  }
-
-  public postBlob<T = any>(
-    endpoint: string,
-    data: Record<string | number, any> = {},
-    config: IAPIConfig = {},
-  ) {
-    const headers = new Headers();
-    headers.append("content-type", "application/json");
-    return this.request<T>(endpoint, {
-      method: "post",
-      headers,
-      body: JSON.stringify(data),
-      handleOk: API.handleBlob,
-      ...config,
-    });
-  }
-
-  public getUri(endpoint: string, data: Record<string | number, any> = {}) {
-    const queryStr = queryString.stringify(data);
-    const url = new URL(`${endpoint}?${queryStr}`, this.hostURL);
-    return url.toString();
+  public formatUrl(endpoint: string, data: Record<string | number, any> = {}) {
+    const _endpoint = this.formatEndpoint(endpoint, data);
+    return new URL(_endpoint, this.hostURL).toString();
   }
 
   public request<T>(endpoint: string, config: IAPIConfig) {
-    const url = new URL(endpoint, this.hostURL);
+    const url = this.formatUrl(endpoint);
     const controller = new AbortController();
 
     const {
@@ -252,6 +281,7 @@ class API {
       mode: "cors",
       credentials: "include",
       cache: "no-cache",
+      keepalive: true,
       ...currentConfig,
     })
       .then((response) => {
@@ -274,25 +304,60 @@ class API {
     return promise as IPromise<T>;
   }
 
+  // MUJI_APP_SSO_HOST=devsso.sqaproxy.dasouche-inc.net
+  // return api.jsonp<T.ISSOUserInfo>('httpApi/getAuthZ.jsonp');
+
   public jsonp(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IJsonpConfig = {},
   ) {
-    const uri = this.getUri(endpoint, data);
+    const url = this.formatUrl(endpoint, data);
     const prefix = config.prefix || "__jp__";
     const id = config.name || `${prefix}${API.jsonpCount++}`;
     const param = config.param || "callback";
     const timeout = config.timeout ? config.timeout : 60000;
     const target = document.getElementsByTagName("script")[0] || document.head;
+    let script;
+    let timer;
+
+    const promise = new Promise((resolve, reject) => {
+      const callback = (data: any) => {
+        resolve(data);
+      };
+
+      (window as IWindow)[id] = callback;
+    });
+
+    // window[id] = function (data) {
+    // debug("jsonp got", data);
+    // cleanup();
+    // if (fn) fn(null, data);
+    // };
+
+    // if (timeout) {
+    //   timer = setTimeout(() => {
+    //     cleanup();
+    //     if (fn) fn(new Error("Timeout"));
+    //   }, timeout);
+    // }
+  }
+
+  private formatEndpoint(
+    endpoint: string,
+    data: Record<string | number, any> = {},
+  ) {
+    const queryStr = queryString.stringify(data);
+
+    if (queryStr) {
+      return `${endpoint}?${queryStr}`;
+    } else {
+      return endpoint;
+    }
   }
 }
 
 export default API;
 
-export const craeteAPI = (
-  host: string,
-  config: IAPIConfig = {
-    showNotification: true,
-  },
-) => new API(host, config);
+export const createAPI = (host: string, config: IAPIConfig = {}) =>
+  new API(host, config);
