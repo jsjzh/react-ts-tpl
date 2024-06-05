@@ -3,11 +3,12 @@ import queryString from "query-string";
 
 interface IPowerfulConfig {
   showNotification?: boolean;
-  handleResponse?: (response: Response) => any;
+  handleOk?: (response: Response) => any;
+  handleNotOk?: (status: number, response: Response) => any;
   handleData?: (data: any) => any;
-  handleStatus?: (status: number, data: any) => any;
 }
 
+// eslint-disable-next-line no-undef
 type IAPIConfig = IPowerfulConfig & RequestInit;
 
 type IJsonpConfig = IPowerfulConfig & {
@@ -31,6 +32,19 @@ class API {
     return response.blob();
   }
 
+  public static handleStatus(status: number, response: Response) {
+    if (status >= 400 && status <= 500) {
+      throw new Error(
+        `[${status} ${response.statusText}] 请求失败 ${response.url}`,
+      );
+    }
+    return response.json();
+  }
+
+  public static handleData(data: any) {
+    return data.data;
+  }
+
   public hostURL: URL;
   public baseConfig: IAPIConfig;
 
@@ -39,139 +53,148 @@ class API {
     this.baseConfig = config;
   }
 
-  public getJson(
+  public getJson<T = any>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IAPIConfig = {},
   ) {
     const queryStr = queryString.stringify(data);
-    const headers = new Headers();
-    headers.append("content-type", "application/x-www-form-urlencoded");
-    return this.request(`${endpoint}?${queryStr}`, {
+    return this.request<T>(`${endpoint}?${queryStr}`, {
       method: "get",
-      headers,
-      handleResponse: API.handleJson,
+      handleOk: API.handleJson,
       ...config,
     });
   }
 
-  public postJson(
+  public postJson<T = any>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
     headers.append("content-type", "application/json");
-    return this.request(endpoint, {
+    return this.request<T>(endpoint, {
       method: "post",
       headers,
       body: JSON.stringify(data),
-      handleResponse: API.handleJson,
+      handleOk: API.handleJson,
       ...config,
     });
   }
 
-  public putJson(
+  public putJson<T = any>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
     headers.append("content-type", "application/json");
-    return this.request(endpoint, {
+    return this.request<T>(endpoint, {
       method: "put",
       headers,
       body: JSON.stringify(data),
-      handleResponse: API.handleJson,
+      handleOk: API.handleJson,
       ...config,
     });
   }
 
-  public patchJson(
+  public patchJson<T = any>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
     headers.append("content-type", "application/json");
-    return this.request(endpoint, {
+    return this.request<T>(endpoint, {
       method: "patch",
       headers,
       body: JSON.stringify(data),
-      handleResponse: API.handleJson,
+      handleOk: API.handleJson,
       ...config,
     });
   }
 
-  public deleteJson(
+  public deleteJson<T = any>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
     headers.append("content-type", "application/json");
-    return this.request(endpoint, {
+    return this.request<T>(endpoint, {
       method: "delete",
       headers,
       body: JSON.stringify(data),
-      handleResponse: API.handleJson,
+      handleOk: API.handleJson,
       ...config,
     });
   }
 
-  public headJson(
+  public headJson<T = any>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
     headers.append("content-type", "application/json");
-    return this.request(endpoint, {
+    return this.request<T>(endpoint, {
       method: "head",
       headers,
       body: JSON.stringify(data),
-      handleResponse: API.handleJson,
+      handleOk: API.handleJson,
       ...config,
     });
   }
 
-  public postForm(endpoint: string, data: FormData, config: IAPIConfig = {}) {
+  public postForm<T = any>(
+    endpoint: string,
+    data: FormData,
+    config: IAPIConfig = {},
+  ) {
     const headers = new Headers();
     headers.append("content-type", "multipart/form-data");
-    return this.request(endpoint, {
+    return this.request<T>(endpoint, {
       method: "post",
       headers,
       body: data,
-      handleResponse: API.handleJson,
+      handleOk: API.handleJson,
       ...config,
     });
   }
 
-  public putForm(endpoint: string, data: FormData, config: IAPIConfig = {}) {
+  public putForm<T = any>(
+    endpoint: string,
+    data: FormData,
+    config: IAPIConfig = {},
+  ) {
     const headers = new Headers();
     headers.append("content-type", "multipart/form-data");
-    return this.request(endpoint, {
+    return this.request<T>(endpoint, {
       method: "put",
       headers,
       body: data,
-      handleResponse: API.handleJson,
+      handleOk: API.handleJson,
       ...config,
     });
   }
 
-  public patchForm(endpoint: string, data: FormData, config: IAPIConfig = {}) {
+  public patchForm<T = any>(
+    endpoint: string,
+    data: FormData,
+    config: IAPIConfig = {},
+  ) {
     const headers = new Headers();
     headers.append("content-type", "multipart/form-data");
-    return this.request(endpoint, {
+    return this.request<T>(endpoint, {
       method: "patch",
       headers,
       body: data,
-      handleResponse: API.handleJson,
+      handleOk: API.handleJson,
       ...config,
     });
   }
 
-  public getBlob(
+  public getBlob<T = any>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IAPIConfig = {},
@@ -179,26 +202,26 @@ class API {
     const queryStr = queryString.stringify(data);
     const headers = new Headers();
     headers.append("content-type", "application/json");
-    return this.request(`${endpoint}?${queryStr}`, {
+    return this.request<T>(`${endpoint}?${queryStr}`, {
       method: "get",
       headers,
-      handleResponse: API.handleBlob,
+      handleOk: API.handleBlob,
       ...config,
     });
   }
 
-  public postBlob(
+  public postBlob<T = any>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
     headers.append("content-type", "application/json");
-    return this.request(endpoint, {
+    return this.request<T>(endpoint, {
       method: "post",
       headers,
       body: JSON.stringify(data),
-      handleResponse: API.handleBlob,
+      handleOk: API.handleBlob,
       ...config,
     });
   }
@@ -215,9 +238,9 @@ class API {
 
     const {
       showNotification = true,
-      handleResponse,
-      handleStatus,
-      handleData = (standard: any) => standard,
+      handleOk = API.handleJson,
+      handleNotOk = API.handleStatus,
+      handleData = API.handleData,
       ...currentConfig
     } = {
       ...this.baseConfig,
@@ -225,46 +248,22 @@ class API {
       ...controller,
     };
 
-    const promise: any = fetch(url, currentConfig)
+    const promise: any = fetch(url, {
+      mode: "cors",
+      credentials: "include",
+      cache: "no-cache",
+      ...currentConfig,
+    })
       .then((response) => {
         // 200 <= response.status <= 299
-        if (response.ok) {
-          // 用来处理 json 或者 blob 返回
-          return handleResponse && handleResponse(response);
-        } else {
-          // 400 <= response.status <= 500
-          // 如果 status 是 400 至 500
-          // 则代表客户端或者服务端出错，此时需要报错
-          // TODO antd 对于无权限好像也是返回的 4xx，需要看看怎么兼容
-          if (response.status >= 400) {
-            if (showNotification) {
-              notification.error({
-                message: `请求错误 ${response.status}: ${response.url}`,
-              });
-            }
-            throw new Error(`[${response.status}] 请求错误 ${response.url}`);
-          } else {
-            // 200 < response.status < 400
-            // 否则的话，就是 3xx 的错，这一般是重定向
-            // 需要用户自行处理，可能是重定向到登录页
-            handleStatus &&
-              handleStatus(
-                response.status,
-                handleResponse && handleResponse(response),
-              );
-          }
-        }
+        // 用来处理 json 或者 blob 返回
+        if (response.ok) return handleOk(response);
+        else return handleNotOk && handleNotOk(response.status, response);
       })
-      .then((standard) => {
-        if (standard) {
-          return handleData(standard);
-        }
-      })
+      .then(handleData)
       .catch((reason) => {
-        if (showNotification) {
+        showNotification &&
           notification.error({ message: `${reason || "未知"}` });
-        }
-
         throw new Error(`请求失败 ${reason}`);
       });
 
@@ -297,16 +296,3 @@ export const craeteAPI = (
     showNotification: true,
   },
 ) => new API(host, config);
-
-// console.log(new URL("http://www.baidu.com"));
-
-console.log(
-  queryString.stringifyUrl({
-    url: "http://www.baidu.com",
-    query: { name: 123, demO: [123, "123"] },
-  }),
-);
-
-// mode: "cors",
-// credentials: "include",
-// cache: "no-cache",
