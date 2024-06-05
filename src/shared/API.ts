@@ -320,6 +320,20 @@ class API {
     let script;
     let timer;
 
+    const promise: any = new Promise((resolve, reject) => {
+      const callback = (data: any) => {
+        resolve(data);
+      };
+
+      (window as IWindow)[id] = callback;
+    });
+
+    const controller = new AbortController();
+
+    promise.cancel = () => {
+      controller.abort("取消请求");
+    };
+
     const request = (url: string) => {
       const target =
         document.getElementsByTagName("script")[0] || document.head;
@@ -327,18 +341,14 @@ class API {
       script.src = url;
       target.parentNode!.insertBefore(script, target);
 
-      script.addEventListener("error", (e) => {
-        console.log("error", e);
-      });
+      script.addEventListener(
+        "error",
+        (e) => {
+          console.log("error", e);
+        },
+        { signal: controller.signal },
+      );
     };
-
-    const promise = new Promise((resolve, reject) => {
-      const callback = (data: any) => {
-        resolve(data);
-      };
-
-      (window as IWindow)[id] = callback;
-    });
 
     // window[id] = function (data) {
     // debug("jsonp got", data);
