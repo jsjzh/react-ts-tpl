@@ -298,7 +298,7 @@ class API {
       });
 
     promise.cancel = () => {
-      controller.abort();
+      controller.abort("取消请求");
     };
 
     return promise as IPromise<T>;
