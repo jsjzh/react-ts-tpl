@@ -4,7 +4,7 @@ import { pick } from "ramda";
 
 interface IPowerfulConfig {
   showNotification?: boolean;
-  handleOk?: (response: Response) => Promise<any>;
+  handleOk?: (response: Response) => Promise<any> | any;
   handleNotOk?: (status: number, response: Response) => any;
   handleData?: (data: any) => any;
 }
@@ -40,6 +40,11 @@ class API {
 
   public static handleJson(response: Response) {
     return response.json();
+  }
+
+  public static handleHeader(response: Response) {
+    debugger;
+    return response.headers;
   }
 
   public static async handleBlob(response: Response) {
@@ -94,6 +99,19 @@ class API {
     return this.request<T>(this.formatEndpoint(endpoint, data), {
       method: "get",
       handleOk: API.handleJson,
+      ...config,
+    });
+  }
+
+  public headJson<T = any>(
+    endpoint: string,
+    data: Record<string | number, any> = {},
+    config: IAPIConfig = {},
+  ) {
+    return this.request<T>(this.formatEndpoint(endpoint, data), {
+      method: "head",
+      handleOk: API.handleHeader,
+      handleData: (header) => header,
       ...config,
     });
   }
@@ -162,8 +180,20 @@ class API {
     });
   }
 
-  // TODO 应该只返回 header，需要验证
-  public headJson<T = any>(
+  public getBlob<T = { blob: Blob; filename: string }>(
+    endpoint: string,
+    data: Record<string | number, any> = {},
+    config: IAPIConfig = {},
+  ) {
+    return this.request<T>(this.formatEndpoint(endpoint, data), {
+      method: "get",
+      handleOk: API.handleBlob,
+      handleData: (blob) => blob,
+      ...config,
+    });
+  }
+
+  public postBlob<T = { blob: Blob; filename: string }>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IAPIConfig = {},
@@ -171,38 +201,6 @@ class API {
     const headers = new Headers();
     headers.append("content-type", "application/json;charset=utf-8");
     return this.request<T>(endpoint, {
-      method: "head",
-      headers,
-      body: JSON.stringify(data),
-      handleOk: API.handleJson,
-      ...config,
-    });
-  }
-
-  public getBlob(
-    endpoint: string,
-    data: Record<string | number, any> = {},
-    config: IAPIConfig = {},
-  ) {
-    return this.request<{ blob: Blob; filename: string }>(
-      this.formatEndpoint(endpoint, data),
-      {
-        method: "get",
-        handleOk: API.handleBlob,
-        handleData: (blob) => blob,
-        ...config,
-      },
-    );
-  }
-
-  public postBlob(
-    endpoint: string,
-    data: Record<string | number, any> = {},
-    config: IAPIConfig = {},
-  ) {
-    const headers = new Headers();
-    headers.append("content-type", "application/json;charset=utf-8");
-    return this.request<{ blob: Blob; filename: string }>(endpoint, {
       method: "post",
       headers,
       body: JSON.stringify(data),
@@ -217,11 +215,8 @@ class API {
     data: FormData,
     config: IAPIConfig = {},
   ) {
-    const headers = new Headers();
-    headers.append("content-type", "multipart/form-data");
     return this.request<T>(endpoint, {
       method: "post",
-      headers,
       body: data,
       handleOk: API.handleJson,
       ...config,
@@ -233,11 +228,8 @@ class API {
     data: FormData,
     config: IAPIConfig = {},
   ) {
-    const headers = new Headers();
-    headers.append("content-type", "multipart/form-data");
     return this.request<T>(endpoint, {
       method: "put",
-      headers,
       body: data,
       handleOk: API.handleJson,
       ...config,
@@ -249,11 +241,8 @@ class API {
     data: FormData,
     config: IAPIConfig = {},
   ) {
-    const headers = new Headers();
-    headers.append("content-type", "multipart/form-data");
     return this.request<T>(endpoint, {
       method: "patch",
-      headers,
       body: data,
       handleOk: API.handleJson,
       ...config,
