@@ -43,7 +43,9 @@ class API {
   }
 
   public static handleHeader(response: Response) {
-    debugger;
+    for (const pair of response.headers.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
     return response.headers;
   }
 
