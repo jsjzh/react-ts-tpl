@@ -107,7 +107,7 @@ class API {
     });
   }
 
-  public headJson<T = any>(
+  public headJson<T = { [k: string]: string }>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IAPIConfig = {},
