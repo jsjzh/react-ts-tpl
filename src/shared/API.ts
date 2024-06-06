@@ -1,6 +1,5 @@
 import { notification } from "antd";
 import queryString from "query-string";
-import { pick } from "ramda";
 
 interface IPowerfulConfig {
   showNotification?: boolean;
@@ -42,11 +41,14 @@ class API {
     return response.json();
   }
 
-  public static handleHeader(response: Response) {
-    for (const pair of response.headers.entries()) {
-      console.log(`${pair[0]}: ${pair[1]}`);
-    }
-    return response.headers;
+  public static handleHead(response: Response) {
+    const headers: { [k: string]: string } = {};
+
+    response.headers.forEach((value, key) => {
+      headers[key] = value;
+    });
+
+    return headers;
   }
 
   public static async handleBlob(response: Response) {
@@ -112,7 +114,7 @@ class API {
   ) {
     return this.request<T>(this.formatEndpoint(endpoint, data), {
       method: "head",
-      handleOk: API.handleHeader,
+      handleOk: API.handleHead,
       handleData: (header) => header,
       ...config,
     });
@@ -304,24 +306,18 @@ class API {
     data: Record<string | number, any> = {},
     config: IJsonpConfig = {},
   ) {
-    const {
-      showNotification = true,
-      handleData = API.handleData,
-      ...currentConfig
-    } = {
-      ...pick(["showNotification", "handleData"], this.baseConfig),
-      ...config,
-    };
+    const { showNotification = true, handleData = API.handleData } =
+      this.baseConfig;
 
-    const prefix = currentConfig.prefix || "__jp__";
-    const id = currentConfig.name || `${prefix}${API.jsonpCount++}`;
-    const param = currentConfig.param || "callback";
+    const prefix = config.prefix || "__jp__";
+    const id = config.name || `${prefix}${API.jsonpCount++}`;
+    const param = config.param || "callback";
 
     const _url = this.formatUrl(endpoint, data);
     _url.searchParams.append(param, id);
     const url = _url.toString();
 
-    const timeout = currentConfig.timeout ? currentConfig.timeout : 60000;
+    const timeout = config.timeout ? config.timeout : 60000;
     let timer: NodeJS.Timeout;
 
     const _window: IWindow = window;
