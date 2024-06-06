@@ -1,5 +1,6 @@
 import { notification } from "antd";
 import queryString from "query-string";
+import { pick } from "ramda";
 
 interface IPowerfulConfig {
   showNotification?: boolean;
@@ -10,12 +11,15 @@ interface IPowerfulConfig {
 
 type IAPIConfig = IPowerfulConfig & RequestInit;
 
-type IJsonpConfig = IPowerfulConfig & {
+interface IJsonpConfig {
+  showNotification?: boolean;
+  handleData?: (data: any) => any;
+
   param?: string;
   prefix?: string;
   name?: string;
   timeout?: number;
-};
+}
 
 type IPromise<T = any> = Promise<T> & {
   cancel: () => void;
@@ -258,7 +262,7 @@ class API {
 
   public formatUrl(endpoint: string, data: Record<string | number, any> = {}) {
     const _endpoint = this.formatEndpoint(endpoint, data);
-    return new URL(_endpoint, this.hostURL).toString();
+    return new URL(_endpoint, this.hostURL);
   }
 
   public request<T>(endpoint: string, config: IAPIConfig) {
@@ -304,64 +308,85 @@ class API {
     return promise as IPromise<T>;
   }
 
-  // MUJI_APP_SSO_HOST=devsso.sqaproxy.dasouche-inc.net
-  // return api.jsonp<T.ISSOUserInfo>('httpApi/getAuthZ.jsonp');
-
   public jsonp<T = any>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IJsonpConfig = {},
   ) {
-    const url = this.formatUrl(endpoint, data);
-    const prefix = config.prefix || "__jp__";
-    const id = config.name || `${prefix}${API.jsonpCount++}`;
-    const param = config.param || "callback";
-    const timeout = config.timeout ? config.timeout : 60000;
-    let script;
-    let timer;
+    const {
+      showNotification = true,
+      handleData = API.handleData,
+      ...currentConfig
+    } = {
+      ...pick(["showNotification", "handleData"], this.baseConfig),
+      ...config,
+    };
 
-    const promise: any = new Promise((resolve, reject) => {
-      const callback = (data: any) => {
-        resolve(data);
-      };
+    const prefix = currentConfig.prefix || "__jp__";
+    const id = currentConfig.name || `${prefix}${API.jsonpCount++}`;
+    const param = currentConfig.param || "callback";
 
-      (window as IWindow)[id] = callback;
-    });
+    const _url = this.formatUrl(endpoint, data);
+    _url.searchParams.append(param, id);
+    const url = _url.toString();
+
+    const timeout = currentConfig.timeout ? currentConfig.timeout : 60000;
+    let timer: NodeJS.Timeout;
+
+    const _window: IWindow = window;
+    const target = document.getElementsByTagName("script")[0] || document.head;
+    const script = document.createElement("script");
 
     const controller = new AbortController();
 
+    const noop = () => {};
+
+    let handleError: (e: ErrorEvent) => void;
+
+    const cleanup = () => {
+      script.removeEventListener("error", handleError);
+      script.parentNode!.removeChild(script);
+      _window[id] = noop;
+      if (timer) clearTimeout(timer);
+    };
+
+    const promise: any = new Promise<T>((resolve, reject) => {
+      _window[id] = (data: any) => {
+        resolve(data);
+        cleanup();
+      };
+
+      handleError = (e: ErrorEvent) => {
+        cleanup();
+        reject(new Error(`[请求失败] ${url}`));
+      };
+
+      if (timeout) {
+        timer = setTimeout(() => {
+          cleanup();
+          reject(new Error(`[请求超时] ${url}`));
+        }, timeout);
+      }
+
+      script.src = url;
+      script.addEventListener("error", handleError, {
+        signal: controller.signal,
+      });
+      target.parentNode!.insertBefore(script, target);
+    })
+      .then((data) => (handleData ? handleData(data) : data))
+      .catch((reason) => {
+        showNotification &&
+          notification.error({ message: `${reason || "未知"}` });
+        throw new Error(`请求失败 ${reason}`);
+      });
+
     promise.cancel = () => {
+      cleanup();
       controller.abort("取消请求");
     };
 
-    const request = (url: string) => {
-      const target =
-        document.getElementsByTagName("script")[0] || document.head;
-      const script = document.createElement("script");
-      script.src = url;
-      target.parentNode!.insertBefore(script, target);
-
-      script.addEventListener(
-        "error",
-        (e) => {
-          console.log("error", e);
-        },
-        { signal: controller.signal },
-      );
-    };
-
-    // window[id] = function (data) {
-    // debug("jsonp got", data);
-    // cleanup();
-    // if (fn) fn(null, data);
-    // };
-
-    // if (timeout) {
-    //   timer = setTimeout(() => {
-    //     cleanup();
-    //     if (fn) fn(new Error("Timeout"));
-    //   }, timeout);
-    // }
+    return promise as IPromise<T>;
   }
 
   private formatEndpoint(
