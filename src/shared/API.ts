@@ -1,5 +1,12 @@
 import { notification } from "antd";
 import queryString from "query-string";
+import ExtendableError from "./error";
+
+class APIError extends ExtendableError {
+  public constructor(message = "") {
+    super(message);
+  }
+}
 
 interface IPowerfulConfig {
   showNotification?: boolean;
@@ -76,9 +83,7 @@ class API {
 
   public static handleStatus(status: number, response: Response) {
     if (status >= 400 && status <= 500) {
-      throw new Error(
-        `[${status} ${response.statusText}] 请求失败 ${response.url}`,
-      );
+      throw new APIError(`[${status}] ${response.url}`);
     }
     return response.json();
   }
@@ -253,54 +258,6 @@ class API {
     });
   }
 
-  public formatUrl(endpoint: string, data: Record<string | number, any> = {}) {
-    const _endpoint = this.formatEndpoint(endpoint, data);
-    return new URL(_endpoint, this.hostURL);
-  }
-
-  public request<T>(endpoint: string, config: IAPIConfig) {
-    const url = this.formatUrl(endpoint);
-    const controller = new AbortController();
-
-    const {
-      showNotification = true,
-      handleOk = API.handleJson,
-      handleNotOk = API.handleStatus,
-      handleData = API.handleData,
-      ...currentConfig
-    } = {
-      ...this.baseConfig,
-      ...config,
-      ...controller,
-    };
-
-    const promise: any = fetch(url, {
-      mode: "cors",
-      credentials: "include",
-      cache: "no-cache",
-      keepalive: true,
-      ...currentConfig,
-    })
-      .then((response) => {
-        // 200 <= response.status <= 299
-        // 用来处理 json 或者 blob 返回
-        if (response.ok) return handleOk(response);
-        else return handleNotOk && handleNotOk(response.status, response);
-      })
-      .then(handleData)
-      .catch((reason) => {
-        showNotification &&
-          notification.error({ message: `${reason || "未知"}` });
-        throw new Error(`请求失败 ${reason}`);
-      });
-
-    promise.cancel = () => {
-      controller.abort("取消请求");
-    };
-
-    return promise as IPromise<T>;
-  }
-
   public jsonp<T = any>(
     endpoint: string,
     data: Record<string | number, any> = {},
@@ -345,13 +302,13 @@ class API {
 
       handleError = (e: ErrorEvent) => {
         cleanup();
-        reject(new Error(`[请求失败] ${url}`));
+        reject(new APIError(`[请求失败] ${url}`));
       };
 
       if (timeout) {
         timer = setTimeout(() => {
           cleanup();
-          reject(new Error(`[请求超时] ${url}`));
+          reject(new APIError(`[请求超时] ${url}`));
         }, timeout);
       }
 
@@ -365,7 +322,7 @@ class API {
       .catch((reason) => {
         showNotification &&
           notification.error({ message: `${reason || "未知"}` });
-        throw new Error(`请求失败 ${reason}`);
+        throw new APIError(`${reason || "未知"}`);
       });
 
     promise.cancel = () => {
@@ -374,6 +331,54 @@ class API {
     };
 
     return promise as IPromise<T>;
+  }
+
+  public request<T>(endpoint: string, config: IAPIConfig) {
+    const url = this.formatUrl(endpoint);
+    const controller = new AbortController();
+
+    const {
+      showNotification = true,
+      handleOk = API.handleJson,
+      handleNotOk = API.handleStatus,
+      handleData = API.handleData,
+      ...currentConfig
+    } = {
+      ...this.baseConfig,
+      ...config,
+      ...controller,
+    };
+
+    const promise: any = fetch(url, {
+      mode: "cors",
+      credentials: "include",
+      cache: "no-cache",
+      keepalive: true,
+      ...currentConfig,
+    })
+      .then((response) => {
+        // 200 <= response.status <= 299
+        // 用来处理 json 或者 blob 返回
+        if (response.ok) return handleOk(response);
+        else return handleNotOk && handleNotOk(response.status, response);
+      })
+      .then(handleData)
+      .catch((reason) => {
+        showNotification &&
+          notification.error({ message: `${reason || "未知"}` });
+        throw new APIError(`${reason || "未知"}`);
+      });
+
+    promise.cancel = () => {
+      controller.abort("取消请求");
+    };
+
+    return promise as IPromise<T>;
+  }
+
+  public formatUrl(endpoint: string, data: Record<string | number, any> = {}) {
+    const _endpoint = this.formatEndpoint(endpoint, data);
+    return new URL(_endpoint, this.hostURL);
   }
 
   private formatEndpoint(
