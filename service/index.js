@@ -17,10 +17,7 @@ app.post("/update", (req, res) => {
     "Access-Control-Allow-Methods",
     "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS",
   );
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "http://local.dasouche-inc.net:8080",
-  );
+  res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
 
   console.log(res);
 

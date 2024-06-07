@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 
 import { RouterProvider } from "react-router-dom";
@@ -24,7 +23,18 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
 
-import "@/shared/API";
+import { createAPI } from "@/shared/API";
+
+const api = createAPI("http://local.dasouche-inc.net:8888/");
+
+const formData = new FormData();
+
+formData.append("username", "username");
+formData.append("password", "password");
+
+api.postForm("/update", formData).then((data) => {
+  console.log(data);
+});
 
 root.render(
   // <React.StrictMode>
