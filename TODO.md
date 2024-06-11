@@ -6,3 +6,4 @@
 - downloadFile 函数需要放到 createAPI 里面
 - 页面需要添加侧边栏、面包屑还有 keep-alive? 的解析
 - 使用文档需要补充
+- 和后端的上传协议该怎么拟定
