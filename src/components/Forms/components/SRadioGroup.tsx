@@ -1,10 +1,10 @@
-import React from "react";
-import { Radio, Form } from "antd";
 import SCol from "@/components/SCol";
+import { Form, Radio } from "antd";
+import React from "react";
 
+import type { SColProps } from "@/components/SCol";
 import type { ColProps, FormItemProps, RadioGroupProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
-import type { SColProps } from "@/components/SCol";
 
 export interface ISRadioGroupProps {
   size?: SColProps["size"];

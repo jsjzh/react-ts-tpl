@@ -1,10 +1,10 @@
-import React from "react";
-import { Form, TreeSelect } from "antd";
 import SCol from "@/components/SCol";
+import { Form, TreeSelect } from "antd";
+import React from "react";
 
+import type { SColProps } from "@/components/SCol";
 import type { ColProps, FormItemProps, TreeSelectProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
-import type { SColProps } from "@/components/SCol";
 
 export interface ISTreeSelectProps {
   size?: SColProps["size"];

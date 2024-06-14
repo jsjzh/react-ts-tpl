@@ -1,10 +1,10 @@
-import React from "react";
-import { DatePicker, Form } from "antd";
 import SCol from "@/components/SCol";
+import { DatePicker, Form } from "antd";
+import React from "react";
 
-import type { ColProps, FormItemProps, DatePickerProps } from "antd";
-import type { NamePath } from "antd/es/form/interface";
 import type { SColProps } from "@/components/SCol";
+import type { ColProps, DatePickerProps, FormItemProps } from "antd";
+import type { NamePath } from "antd/es/form/interface";
 
 export interface ISDatePickerProps {
   size?: SColProps["size"];

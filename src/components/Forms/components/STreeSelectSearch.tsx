@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import { Form, TreeSelect } from "antd";
 import SCol from "@/components/SCol";
+import { Form, TreeSelect } from "antd";
+import React, { useEffect } from "react";
 
+import type { SColProps } from "@/components/SCol";
+import { useDebounceFn } from "ahooks";
 import type { ColProps, FormItemProps, TreeSelectProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
-import { useDebounceFn } from "ahooks";
-import type { SColProps } from "@/components/SCol";
 
 export interface ISTreeSelectSearchProps {
   searchOnInit?: boolean;

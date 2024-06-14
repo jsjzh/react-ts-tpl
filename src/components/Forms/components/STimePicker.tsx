@@ -1,10 +1,10 @@
-import React from "react";
-import { TimePicker, Form } from "antd";
 import SCol from "@/components/SCol";
+import { Form, TimePicker } from "antd";
+import React from "react";
 
+import type { SColProps } from "@/components/SCol";
 import type { ColProps, FormItemProps, TimePickerProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
-import type { SColProps } from "@/components/SCol";
 
 export interface ISTimePickerProps {
   size?: SColProps["size"];

@@ -1,10 +1,10 @@
-import React from "react";
-import { Form, InputNumber } from "antd";
 import SCol from "@/components/SCol";
+import { Form, InputNumber } from "antd";
+import React from "react";
 
+import type { SColProps } from "@/components/SCol";
 import type { ColProps, FormItemProps, InputNumberProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
-import type { SColProps } from "@/components/SCol";
 
 export interface ISInputNumberProps {
   size?: SColProps["size"];

@@ -1,10 +1,10 @@
-import React, { ReactNode } from "react";
-import { Checkbox, Form } from "antd";
 import SCol from "@/components/SCol";
+import { Checkbox, Form } from "antd";
+import React, { ReactNode } from "react";
 
-import type { ColProps, FormItemProps, CheckboxProps } from "antd";
-import type { NamePath } from "antd/es/form/interface";
 import type { SColProps } from "@/components/SCol";
+import type { CheckboxProps, ColProps, FormItemProps } from "antd";
+import type { NamePath } from "antd/es/form/interface";
 
 export interface ISCheckboxProps {
   size?: SColProps["size"];

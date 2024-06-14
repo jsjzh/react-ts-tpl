@@ -1,10 +1,10 @@
-import React from "react";
-import { Form, Select } from "antd";
 import SCol from "@/components/SCol";
+import { Form, Select } from "antd";
+import React from "react";
 
+import type { SColProps } from "@/components/SCol";
 import type { ColProps, FormItemProps, SelectProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
-import type { SColProps } from "@/components/SCol";
 
 export interface ISSelectProps {
   size?: SColProps["size"];

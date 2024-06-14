@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import { Form, Select } from "antd";
-import { useDebounceFn } from "ahooks";
 import SCol from "@/components/SCol";
+import { useDebounceFn } from "ahooks";
+import { Form, Select } from "antd";
+import React, { useEffect } from "react";
 
+import type { SColProps } from "@/components/SCol";
 import type { ColProps, FormItemProps, SelectProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
-import type { SColProps } from "@/components/SCol";
 
 export interface ISSelectSearchProps {
   searchOnInit?: boolean;

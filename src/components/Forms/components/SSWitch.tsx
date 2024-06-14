@@ -1,10 +1,10 @@
-import React from "react";
-import { Switch, Form } from "antd";
 import SCol from "@/components/SCol";
+import { Form, Switch } from "antd";
+import React from "react";
 
+import type { SColProps } from "@/components/SCol";
 import type { ColProps, FormItemProps, SwitchProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
-import type { SColProps } from "@/components/SCol";
 
 export interface ISSWitchProps {
   size?: SColProps["size"];
