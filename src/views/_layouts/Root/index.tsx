@@ -1,8 +1,12 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
 const LayoutRoot: React.FC = () => {
-  return <Outlet />;
+  return (
+    <Suspense>
+      <Outlet />
+    </Suspense>
+  );
 };
 
 export default LayoutRoot;

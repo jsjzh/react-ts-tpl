@@ -8,11 +8,10 @@
   "license": "MIT",
   "scripts": {
     "start": "npm run dev",
-    "dev": "vite --port 8080 --host local.dasouche-inc.net --open",
-    "build:dev": "tsc && vite build --mode dev",
-    "build:test": "tsc && vite build --mode test",
-    "build:staging": "tsc && vite build --mode staging",
-    "build:prod": "tsc && vite build --mode prod",
+    "dev": "NODE_ENV=development vite --port 8080 --host local.dasouche-inc.net --open --mode development",
+    "build:dev": "tsc && NODE_ENV=development vite build --mode development",
+    "build:staging": "tsc NODE_ENV=staging && vite build --mode staging",
+    "build:prod": "tsc && NODE_ENV=production vite build --mode production",
     "preview": "vite preview",
     "lint": "eslint --fix",
     "format": "prettier --write --parser typescript \"**/*.[tj]s?(x)\" --config prettier.config.cjs",
@@ -48,7 +47,6 @@
     "eslint": "^8.57.1",
     "eslint-config-alloy": "^5.1.2",
     "eslint-plugin-react": "^7.36.1",
-    "globals": "^15.9.0",
     "less": "^4.2.0",
     "typescript": "^5.6.2",
     "vite": "^5.4.6"

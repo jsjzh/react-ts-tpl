@@ -5,5 +5,6 @@ interface ImportMeta {
 }
 
 interface ImportMetaEnv {
-  readonly VITE_APP_TITLE: string;
+  readonly VITE_HOST: string;
+  readonly VITE_SKIP_AUTHENTICATION: "true" | "false";
 }

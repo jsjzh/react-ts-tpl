@@ -1,3 +1,4 @@
+import { lazy } from "react";
 import { createHashRouter, RouteObject } from "react-router-dom";
 
 import LayoutRoot from "@/views/_layouts/Root";
@@ -11,9 +12,12 @@ import ErrorBoundary from "@/views/_errors/ErrorBoundary";
 
 import Login from "@/views/Login";
 
-import Home from "@/views/dashboard/Home";
-import Todo from "@/views/dashboard/todo";
+// import Home from "@/views/dashboard/Home";
+// import Todo from "@/views/dashboard/todo";
 import { HomeFilled, ToolFilled } from "@ant-design/icons";
+
+const LazyHome = lazy(() => import("@/views/dashboard/Home"));
+const LazyTodo = lazy(() => import("@/views/dashboard/todo"));
 
 export const routes: RouteObject[] = [
   {
@@ -26,8 +30,8 @@ export const routes: RouteObject[] = [
         path: "/dashboard",
         element: <LayoutContainer />,
         children: [
-          { index: true, element: <Home /> },
-          { path: "/dashboard/todo", element: <Todo /> },
+          { index: true, element: <LazyHome /> },
+          { path: "/dashboard/todo", element: <LazyTodo /> },
         ],
       },
       { path: "/403", element: <Error403 /> },

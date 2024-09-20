@@ -11,7 +11,7 @@ export default defineConfig((config) => {
     plugins: [react()],
     resolve: { alias: { "@": path.resolve("./src") } },
     build: {
-      sourcemap: config.mode !== "prod",
+      sourcemap: config.mode !== "production",
       rollupOptions: {
         output: {
           manualChunks: {
