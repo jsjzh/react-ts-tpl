@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 // https://vitejs.dev/config/
 export default defineConfig((config) => {
   // config.mode
-  // dev test staging prod
+  // development staging production
   return {
     base: "./",
     plugins: [react()],
