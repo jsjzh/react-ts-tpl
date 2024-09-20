@@ -6,7 +6,6 @@ import { defineConfig } from "vite";
 export default defineConfig((config) => {
   // config.mode
   // dev test staging prod
-
   return {
     base: "./",
     plugins: [react()],

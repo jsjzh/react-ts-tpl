@@ -9,10 +9,10 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "vite --port 8080 --host local.dasouche-inc.net --open",
-    "build:dev": "tsc -b && vite build --mode dev",
-    "build:test": "tsc -b && vite build --mode test",
-    "build:staging": "tsc -b && vite build --mode staging",
-    "build:prod": "tsc -b && vite build --mode prod",
+    "build:dev": "tsc && vite build --mode dev",
+    "build:test": "tsc && vite build --mode test",
+    "build:staging": "tsc && vite build --mode staging",
+    "build:prod": "tsc && vite build --mode prod",
     "preview": "vite preview",
     "lint": "eslint \"./**/*.{ts,tsx}\" --cache --fix",
     "format": "prettier --write --cache --parser typescript \"**/*.[tj]s?(x)\" --config prettier.config.cjs",
@@ -37,6 +37,7 @@
     "zustand": "^4.5.5"
   },
   "devDependencies": {
+    "@eslint/js": "^9.10.0",
     "@types/jsonp": "^0.2.3",
     "@types/node": "^20.16.5",
     "@types/ramda": "^0.29.12",
@@ -49,8 +50,10 @@
     "eslint": "^8.57.1",
     "eslint-config-alloy": "^5.1.2",
     "eslint-plugin-react": "^7.36.1",
+    "globals": "^15.9.0",
     "less": "^4.2.0",
     "typescript": "^5.6.2",
+    "typescript-eslint": "^8.6.0",
     "vite": "^5.4.6"
   }
 }
