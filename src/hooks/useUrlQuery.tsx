@@ -1,5 +1,5 @@
-import { useLocation, useParams } from "react-router-dom";
 import queryString from "query-string";
+import { useLocation, useParams } from "react-router-dom";
 
 const useUrlQuery = <T extends { [k: string]: any }>(): T => {
   const location = useLocation();
