@@ -1,7 +1,7 @@
-import React from "react";
-import { useImmer } from "use-immer";
 import SModal from "@/components/SModal";
 import { useDashboardStore, useGlobalStore } from "@/stores";
+import React from "react";
+import { useImmer } from "use-immer";
 
 interface IProps {
   open: boolean;

@@ -8,8 +8,7 @@ interface IProps {}
 const ErrorBoundary: React.FC<IProps> = (props) => {
   const error = useRouteError();
   console.log(isRouteErrorResponse(error));
-  
-  
+
   if (isRouteErrorResponse(error) && error.status === 401) {
     // the response json is automatically parsed to
     // `error.data`, you also have access to the status

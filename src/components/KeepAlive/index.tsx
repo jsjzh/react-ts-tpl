@@ -18,7 +18,7 @@ const KeepAlive = (props: any) => {
       const _key = key.split("__")[0];
       if (!include.includes(_key) || _key === pathname) {
         // @ts-ignore
-        // eslint-disable-next-line react/no-this-in-sfc
+
         this.delete(key);
       }
     }, componentList.current);

@@ -1,7 +1,7 @@
-import { createBrowserRouter, RouteObject } from "react-router-dom";
+import { createHashRouter, RouteObject } from "react-router-dom";
 
 import LayoutRoot from "@/views/_layouts/Root";
-import LayoutBlank from "@/views/_layouts/Blank";
+// import LayoutBlank from "@/views/_layouts/Blank";
 import LayoutContainer from "@/views/_layouts/Container";
 
 import Error403 from "@/views/_errors/403";
@@ -51,4 +51,4 @@ export const menus: IMenus[] = [
   { key: "/dashboard/todo", label: "待办", icon: <ToolFilled /> },
 ];
 
-export default createBrowserRouter(routes);
+export default createHashRouter(routes);

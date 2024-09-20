@@ -1,8 +1,6 @@
 import createDB from "@/shared/createDB";
 
-interface GlobalData {
-  
-}
+interface GlobalData {}
 
 const db = createDB({ name: "global" });
 

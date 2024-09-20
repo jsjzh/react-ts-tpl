@@ -4,7 +4,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", "node_modules"] },
+  { ignores: ["dist"] },
   {
     settings: { react: { version: "18.3" } },
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
@@ -21,6 +21,7 @@ export default tseslint.config(
     rules: {
       ...react.configs.recommended.rules,
       ...react.configs["jsx-runtime"].rules,
+      "react/no-unused": "off",
     },
   },
 );

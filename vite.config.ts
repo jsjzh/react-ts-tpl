@@ -1,4 +1,4 @@
-import react from "@vitejs/plugin-react";
+import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { defineConfig } from "vite";
 
@@ -17,14 +17,20 @@ export default defineConfig((config) => {
           manualChunks: {
             "react-vendor": ["react", "react-dom", "react-router-dom"],
             "react-utils-vendor": [
+              "ahooks",
               "zustand",
               "use-immer",
               "styled-components",
-              "ahooks",
             ],
             "antd-vendor": ["antd", "@ant-design/icons", "@ant-design/cssinjs"],
-            "request-vendor": ["jsonp", "query-string"],
-            "utils-vendor": ["dayjs", "immer", "ramda", "localforage"],
+            "utils-vendor": [
+              "jsonp",
+              "dayjs",
+              "immer",
+              "ramda",
+              "localforage",
+              "query-string",
+            ],
           },
         },
       },
