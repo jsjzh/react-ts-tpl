@@ -17,21 +17,10 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    plugins: {
-      react,
-    },
+    plugins: { react },
     rules: {
       ...react.configs.recommended.rules,
       ...react.configs["jsx-runtime"].rules,
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-empty-interface": "off",
-      "no-return-assign": "off",
-      "no-promise-executor-return": "off",
-      "max-params": "off",
-      "no-sequences": "off",
-      "no-empty": "off",
-      "@typescript-eslint/consistent-type-imports": "off",
-      "@typescript-eslint/prefer-for-of": "off",
     },
   },
 );
