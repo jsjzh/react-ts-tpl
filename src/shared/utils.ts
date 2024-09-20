@@ -1,5 +1,3 @@
-import { encode } from "js-base64";
-
 /**
  * 异步延迟函数
  * 创建一个Promise，在指定的延迟时间（毫秒）后自动解析，无返回值。
@@ -42,7 +40,9 @@ export const phoneReg =
 export const isPhoneNumber = (phone: number | string) =>
   phoneReg.test(String(phone));
 
-export const encodeBase64 = (pwd: string) => encode(pwd);
+export const encodeBase64 = (str: string) => window.btoa(str);
+
+export const decodeBase64 = (b64: string) => window.atob(b64);
 
 export const createInitPageData = <T>(
   values: Partial<BASE.PaginationResp<T>> = {},

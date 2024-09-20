@@ -1,6 +1,6 @@
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig((config) => {
@@ -24,15 +24,8 @@ export default defineConfig((config) => {
               "ahooks",
             ],
             "antd-vendor": ["antd", "@ant-design/icons", "@ant-design/cssinjs"],
-            "request-vendor": ["axios", "jsonp", "query-string"],
-            "utils-vendor": [
-              "dayjs",
-              "immer",
-              "ramda",
-              "decimal.js",
-              "js-base64",
-              "localforage",
-            ],
+            "request-vendor": ["jsonp", "query-string"],
+            "utils-vendor": ["dayjs", "immer", "ramda", "localforage"],
           },
         },
       },
