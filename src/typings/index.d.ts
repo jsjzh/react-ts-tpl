@@ -1,5 +1,3 @@
-/// <reference types="vite/client" />
-
 declare namespace BASE {
   interface IPage {
     pageNo: number;
