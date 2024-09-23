@@ -1,7 +1,7 @@
 import { createInitPageData, createInitPageQuery } from "@/shared/utils";
 import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
 // import { devtools, persist } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 
 interface DashboardData {
   Home: {
