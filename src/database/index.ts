@@ -1,3 +1,3 @@
-import * as globalDB from "./global";
+import * as windowDBGlobal from "./global";
 
-export { globalDB };
+export { windowDBGlobal };
