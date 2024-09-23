@@ -9,7 +9,7 @@ import {
   withPerformance,
 } from "@/hoc";
 import { createInitPageData } from "@/shared/utils";
-import { useTemplateStore } from "@/stores";
+import { useDashboardStore } from "@/stores";
 import { useDebounceFn } from "ahooks";
 import { Button, Form, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
@@ -26,10 +26,10 @@ interface IForms {
 
 interface IProps extends withGlobalStoreProps, withFormProps<IForms> {}
 
-const PageTemplate: React.FC<IProps> = (props) => {
-  const { db, update } = useTemplateStore((state) => ({
-    db: state.PageTemplate,
-    update: state.updatePageTemplate,
+const Home: React.FC<IProps> = (props) => {
+  const { db, update } = useDashboardStore((state) => ({
+    db: state.Home,
+    update: state.updateHome,
   }));
 
   const [pageData, updatePageData] = useImmer<{}>({});
@@ -156,4 +156,4 @@ const PageTemplate: React.FC<IProps> = (props) => {
 
 const withHOC = pipe(withPerformance, withGlobalStore, withForm);
 
-export default withHOC(PageTemplate);
+export default withHOC(Home);

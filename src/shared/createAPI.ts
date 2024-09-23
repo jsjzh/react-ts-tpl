@@ -45,7 +45,15 @@ export class API {
   // response.formData()：得到 FormData 表单对象。
 
   public static handleJson(response: Response) {
-    return response.json();
+    if (response.redirected) {
+      location.href = response.url;
+    }
+
+    try {
+      return response.json();
+    } catch (error) {
+      throw new APIError(`[解析失败] ${response.url}`);
+    }
   }
 
   public static handleHead(response: Response) {
@@ -275,7 +283,7 @@ export class API {
     const url = _url.toString();
 
     const timeout = config.timeout ? config.timeout : 60000;
-    let timer: NodeJS.Timeout;
+    let timer: number;
 
     const _window: IWindow = window;
     const target = document.getElementsByTagName("script")[0] || document.head;

@@ -1,11 +1,11 @@
 import { Form, FormInstance } from "antd";
 import React from "react";
 
-export interface withFormProps<T = any> {
+export interface withFormProps<T> {
   form: FormInstance<T>;
 }
 
-function withForm<T = any>(WrappedComponent: React.FC) {
+function withForm<T>(WrappedComponent: React.FC) {
   return function withFormComponent(props: any) {
     const [form] = Form.useForm<T>();
 

@@ -1,13 +1,12 @@
-import { withGlobalStore, withGlobalStoreProps } from "@/hoc";
+import { useGlobalStore } from "@/stores";
 import { Breadcrumb } from "antd";
-import { pipe } from "ramda";
 import React, { useImperativeHandle, useRef } from "react";
 
 interface IProps {
   style?: React.CSSProperties;
 }
 
-interface IProps extends withGlobalStoreProps {
+interface IProps {
   style?: React.CSSProperties;
 }
 
@@ -19,8 +18,13 @@ interface PageBreadcrumbIRefs {
 
 const PageBreadcrumb = React.forwardRef<PageBreadcrumbIRefs, IProps>(
   (props, ref) => {
+    const { gdb, gupdate } = useGlobalStore((state) => ({
+      gdb: state,
+      gupdate: state.updateGlobal,
+    }));
+
     const get = () => {
-      return props.gdb.breadcrumbData;
+      return gdb.breadcrumbData;
     };
 
     const push = (item: {
@@ -28,26 +32,24 @@ const PageBreadcrumb = React.forwardRef<PageBreadcrumbIRefs, IProps>(
       href?: string;
       onClick?: () => void;
     }) => {
-      const pre = props.gdb.breadcrumbData;
+      const pre = gdb.breadcrumbData;
       const next = [...pre, { title: item.title, href: item.href }];
-      props.gupdate((draft) => {
+      gupdate((draft) => {
         draft.breadcrumbData = next;
       });
     };
 
     const pop = () => {
-      const pre = props.gdb.breadcrumbData;
+      const pre = gdb.breadcrumbData;
       const next = pre.slice(0, pre.length - 1);
-      props.gupdate((draft) => {
+      gupdate((draft) => {
         draft.breadcrumbData = next;
       });
     };
 
-    useImperativeHandle(ref, () => ({ push, pop, get }), [
-      props.gdb.breadcrumbData,
-    ]);
+    useImperativeHandle(ref, () => ({ push, pop, get }), [gdb.breadcrumbData]);
 
-    return <Breadcrumb style={props.style} items={props.gdb.breadcrumbData} />;
+    return <Breadcrumb style={props.style} items={gdb.breadcrumbData} />;
   },
 );
 
@@ -74,6 +76,4 @@ export const usePageBreadcrumb = () => {
   };
 };
 
-const withHOC = pipe(withGlobalStore);
-
-export default withHOC(PageBreadcrumb);
+export default PageBreadcrumb;
