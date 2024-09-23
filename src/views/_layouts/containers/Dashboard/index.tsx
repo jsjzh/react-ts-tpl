@@ -1,57 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { menus } from "@/router";
+import { dashboardMenus } from "@/router";
 import { path } from "@/shared/treeUtils";
 import { Menu, MenuProps } from "antd";
 
 const styles: { [k: string]: string | number } = {
   headerHeight: "4rem",
   siderWidth: "16rem",
-};
-
-const Container = styled.div`
-  display: flex;
-`;
-
-const LayoutContainer: React.FC = () => {
-  return (
-    <>
-      <Header />
-      <Container>
-        <Sider />
-        <Content />
-      </Container>
-    </>
-  );
-};
-
-export default LayoutContainer;
-
-const HeaderContainer = styled.div`
-  height: ${styles.headerHeight};
-  line-height: ${styles.headerHeight};
-  padding-left: 2rem;
-  padding-right: 2rem;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
-  position: relative;
-  z-index: 999;
-`;
-
-const HeaderIcon = styled.span`
-  font-weight: 600;
-  padding: 0.4rem;
-  border-radius: 8px;
-  background-color: #eee;
-`;
-
-const Header: React.FC = () => {
-  return (
-    <HeaderContainer>
-      <HeaderIcon>REACT-TS-TPL</HeaderIcon>
-    </HeaderContainer>
-  );
 };
 
 const SiderContainer = styled.div`
@@ -85,7 +42,7 @@ const Sider: React.FC = () => {
     // 需要对 routes 进行解析
     // 但是 routes 又包含了 layout 的信息
     // 则可能会获取到不正确的 path
-    const menuPath = path(menus, location.pathname) as string[];
+    const menuPath = path(dashboardMenus, location.pathname) as string[];
     setOpenKeys(menuPath);
   }, []);
 
@@ -94,7 +51,7 @@ const Sider: React.FC = () => {
       <Menu
         mode="inline"
         style={{ height: "100%" }}
-        items={menus}
+        items={dashboardMenus}
         selectedKeys={selectedKeys}
         openKeys={openKeys}
         onClick={handleClick}
@@ -110,10 +67,47 @@ const ContentContainer = styled.div`
   height: calc(100vh - ${styles.headerHeight});
 `;
 
-const Content: React.FC = () => {
-  return (
-    <ContentContainer id="globalContentContainer">
-      <Outlet />
-    </ContentContainer>
-  );
-};
+const Content: React.FC = () => (
+  <ContentContainer id="globalContentContainer">
+    <Outlet />
+  </ContentContainer>
+);
+
+const Container = styled.div`
+  display: flex;
+`;
+
+const HeaderContainer = styled.div`
+  height: ${styles.headerHeight};
+  line-height: ${styles.headerHeight};
+  padding-left: 2rem;
+  padding-right: 2rem;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16);
+  position: relative;
+  z-index: 999;
+`;
+
+const HeaderIcon = styled.span`
+  font-weight: 600;
+  padding: 0.4rem;
+  border-radius: 8px;
+  background-color: #eee;
+`;
+
+const Header: React.FC = () => (
+  <HeaderContainer>
+    <HeaderIcon>REACT-TS-TPL</HeaderIcon>
+  </HeaderContainer>
+);
+
+const LayoutDashboardContainer: React.FC = () => (
+  <Suspense>
+    <Header />
+    <Container>
+      <Sider />
+      <Content />
+    </Container>
+  </Suspense>
+);
+
+export default LayoutDashboardContainer;

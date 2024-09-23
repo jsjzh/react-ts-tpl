@@ -1,20 +1,20 @@
 import { lazy } from "react";
 import { createHashRouter, RouteObject } from "react-router-dom";
 
+import { HomeFilled, ToolFilled } from "@ant-design/icons";
+
 import LayoutRoot from "@/views/_layouts/Root";
-// import LayoutBlank from "@/views/_layouts/Blank";
-import LayoutContainer from "@/views/_layouts/Container";
+
+import LayoutBlankContainer from "@/views/_layouts/containers/Blank";
+import LayoutDashboardContainer from "@/views/_layouts/containers/Dashboard";
+import LayoutExDashboardContainer from "@/views/_layouts/containers/ExDashboard";
 
 import Error403 from "@/views/_errors/403";
 import Error404 from "@/views/_errors/404";
 import Error500 from "@/views/_errors/500";
 import ErrorBoundary from "@/views/_errors/ErrorBoundary";
 
-import Login from "@/views/Login";
-
-// import Home from "@/views/dashboard/Home";
-// import Todo from "@/views/dashboard/todo";
-import { HomeFilled, ToolFilled } from "@ant-design/icons";
+const LazyLogin = lazy(() => import("@/views/Login"));
 
 const LazyHome = lazy(() => import("@/views/dashboard/Home"));
 const LazyTodo = lazy(() => import("@/views/dashboard/todo"));
@@ -25,15 +25,28 @@ export const routes: RouteObject[] = [
     element: <LayoutRoot />,
     errorElement: <ErrorBoundary />,
     children: [
-      { index: true, element: <Login /> },
+      {
+        path: "/",
+        element: <LayoutBlankContainer />,
+        children: [{ index: true, element: <LazyLogin /> }],
+      },
+      {
+        path: "/ex/dashboard",
+        element: <LayoutExDashboardContainer />,
+        children: [
+          { index: true, element: <LazyHome /> },
+          { path: "/ex/dashboard/todo", element: <LazyTodo /> },
+        ],
+      },
       {
         path: "/dashboard",
-        element: <LayoutContainer />,
+        element: <LayoutDashboardContainer />,
         children: [
           { index: true, element: <LazyHome /> },
           { path: "/dashboard/todo", element: <LazyTodo /> },
         ],
       },
+      // TODO 专门外嵌的 path，无 menu
       { path: "/403", element: <Error403 /> },
       { path: "/404", element: <Error404 /> },
       { path: "/500", element: <Error500 /> },
@@ -50,7 +63,7 @@ export interface IMenus {
   children?: IMenus[];
 }
 
-export const menus: IMenus[] = [
+export const dashboardMenus: IMenus[] = [
   { key: "/dashboard", label: "首页", icon: <HomeFilled /> },
   { key: "/dashboard/todo", label: "待办", icon: <ToolFilled /> },
 ];
