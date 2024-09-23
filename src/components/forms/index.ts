@@ -53,7 +53,7 @@ export {
   STextArea,
   STimePicker,
   STreeSelect,
-  STreeSelectSearch
+  STreeSelectSearch,
 };
 export type {
   ISCheckboxProps,
@@ -74,6 +74,5 @@ export type {
   ISTextAreaProps,
   ISTimePickerProps,
   ISTreeSelectProps,
-  ISTreeSelectSearchProps
+  ISTreeSelectSearchProps,
 };
-

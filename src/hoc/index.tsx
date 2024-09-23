@@ -4,4 +4,3 @@ import withPerformance from "./withPerformance";
 
 export { withForm, withGlobalStore, withPerformance };
 export type { withFormProps, withGlobalStoreProps };
-

@@ -21,8 +21,8 @@ const SModal: React.FC<IProps> = (props) => {
   const currentWidth = props.width
     ? props.width
     : props.size
-    ? sizeMap[props.size]
-    : sizeMap.middle;
+      ? sizeMap[props.size]
+      : sizeMap.middle;
 
   return (
     <Modal {...omitProps(props)} width={currentWidth}>
