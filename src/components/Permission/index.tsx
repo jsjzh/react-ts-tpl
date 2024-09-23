@@ -1,20 +1,15 @@
-// TODO
+import { withGlobalStore, withGlobalStoreProps } from "@/hoc";
 import { SKIP_AUTHENTICATION } from "@/shared/const";
-import { useGlobalStore } from "@/stores";
-import { pick } from "ramda";
+import { pipe } from "ramda";
 import React from "react";
 
-interface IProps {
+interface IProps extends withGlobalStoreProps {
   code: string;
   children: React.ReactElement;
 }
 
-const mapStateFromGlobal = pick(["componentCodeList", "menuCodeList"]);
-
 const Permission: React.FC<IProps> = (props) => {
-  const global = useGlobalStore(mapStateFromGlobal);
-
-  const codes = [...global.componentCodeList, ...global.menuCodeList];
+  const codes: string[] = [];
 
   if (SKIP_AUTHENTICATION || codes.includes(props.code.toLocaleUpperCase())) {
     return props.children;
@@ -23,4 +18,6 @@ const Permission: React.FC<IProps> = (props) => {
   }
 };
 
-export default Permission;
+const withHOC = pipe(withGlobalStore);
+
+export default withHOC(Permission);

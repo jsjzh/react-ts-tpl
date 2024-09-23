@@ -1,17 +1,18 @@
 import SModal from "@/components/SModal";
-import { useGlobalStore } from "@/stores";
+import { withGlobalStore, withGlobalStoreProps, withPerformance } from "@/hoc";
+import { pipe } from "ramda";
 import React from "react";
 import { useImmer } from "use-immer";
 
-interface IProps {
+interface IProps extends withGlobalStoreProps {
   open: boolean;
   onOk?: () => void;
   onCancel?: () => void;
+
+  current?: API.User;
 }
 
 const ModalTemplate: React.FC<IProps> = (props) => {
-  const { gdb } = useGlobalStore((state) => ({ gdb: state.Global }));
-
   const [pageData, updatePageData] = useImmer<{}>({});
   const [pageStatus, updatePageStatus] = useImmer<{}>({});
   const [pageTempData, updatePageTempData] = useImmer<{}>({});
@@ -19,6 +20,7 @@ const ModalTemplate: React.FC<IProps> = (props) => {
   const handleOk = () => {
     props.onOk && props.onOk();
   };
+
   const handleCancel = () => {
     props.onCancel && props.onCancel();
   };
@@ -37,4 +39,6 @@ const ModalTemplate: React.FC<IProps> = (props) => {
   );
 };
 
-export default ModalTemplate;
+const withHOC = pipe(withPerformance, withGlobalStore);
+
+export default withHOC(ModalTemplate);

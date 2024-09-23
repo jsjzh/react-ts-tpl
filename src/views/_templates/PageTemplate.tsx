@@ -1,3 +1,4 @@
+import { appAPI } from "@/api";
 import PageWrapper from "@/components/PageWrapper";
 import SRow from "@/components/SRow";
 import { SSelect } from "@/components/forms";
@@ -8,15 +9,18 @@ import {
   withGlobalStoreProps,
   withPerformance,
 } from "@/hoc";
+import { createInitPageData } from "@/shared/utils";
 import { useTemplateStore } from "@/stores";
 import { useDebounceFn } from "ahooks";
-import { Form } from "antd";
+import { Button, Form, Table } from "antd";
+import { ColumnsType } from "antd/es/table";
 import { pipe } from "ramda";
 import React, { useEffect } from "react";
 import { useImmer } from "use-immer";
+import ModalTemplate from "./ModalTemplate";
 
 interface IForms {
-  select?: string | number;
+  name?: string | number;
   pageNo: number;
   pageSize: number;
 }
@@ -37,6 +41,29 @@ const PageTemplate: React.FC<IProps> = (props) => {
     update((draft) => {
       draft.pageStatus.isLoading = true;
     });
+
+    appAPI
+      .getUsers({
+        name: props.form.getFieldValue("name"),
+        pageNo: props.form.getFieldValue("pageNo"),
+        pageSize: props.form.getFieldValue("pageSize"),
+      })
+      .then((data) => {
+        update((draft) => {
+          draft.pageData.dataSource = data;
+        });
+      })
+      .catch(() => {
+        update((draft) => {
+          draft.pageData.dataSource = createInitPageData();
+        });
+      })
+      .finally(() => {
+        update((draft) => {
+          draft.pageQuery = props.form.getFieldsValue();
+          draft.pageStatus.isLoading = false;
+        });
+      });
   };
 
   const _onValuesChange = (_: Partial<IForms>, values: IForms) => {
@@ -52,17 +79,75 @@ const PageTemplate: React.FC<IProps> = (props) => {
     fetchPageData();
   }, []);
 
+  const columns: ColumnsType<API.User> = [
+    { title: "id", dataIndex: "id" },
+    { title: "name", dataIndex: "name" },
+    { title: "age", dataIndex: "age" },
+    {
+      title: "controller",
+      dataIndex: "controller",
+      render: (_, record) => (
+        <Button
+          onClick={() => {
+            update((draft) => {
+              draft.pageStatus.showModal = true;
+              draft.pageTempData.current = record;
+            });
+          }}
+        >
+          edit
+        </Button>
+      ),
+    },
+  ];
+
   return (
     <PageWrapper>
       <Form form={props.form} onValuesChange={onValuesChange}>
         <SRow>
-          <SSelect
-            name="select"
-            label="下拉选择"
-            options={db.pageTempData.options}
-          />
+          <SSelect name="name" label="name" options={db.pageTempData.options} />
         </SRow>
       </Form>
+
+      <Table
+        rowKey="id"
+        loading={db.pageStatus.isLoading}
+        columns={columns}
+        dataSource={db.pageData.dataSource.items}
+        pagination={{
+          showSizeChanger: false,
+          current: db.pageData.dataSource.pageNo,
+          pageSize: db.pageData.dataSource.pageSize,
+          total: db.pageData.dataSource.totalSize,
+        }}
+        onChange={(pagination, filters, sorter, extra) => {
+          if (extra.action === "paginate") {
+            props.form.setFieldsValue({ pageNo: pagination.current });
+            fetchPageData();
+          }
+        }}
+      />
+
+      {db.pageStatus.showModal && (
+        <ModalTemplate
+          open={db.pageStatus.showModal}
+          current={db.pageTempData.current}
+          onOk={() => {
+            update((draft) => {
+              draft.pageStatus.showModal = false;
+              draft.pageTempData.current = undefined;
+            });
+            props.form.setFieldsValue({ pageNo: 1 });
+            fetchPageData();
+          }}
+          onCancel={() => {
+            update((draft) => {
+              draft.pageStatus.showModal = false;
+              draft.pageTempData.current = undefined;
+            });
+          }}
+        />
+      )}
     </PageWrapper>
   );
 };

@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 
 import { RouterProvider } from "react-router-dom";
@@ -24,11 +23,11 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
-    <ConfigProvider locale={zhCN}>
-      <StyleProvider transformers={[legacyLogicalPropertiesTransformer]}>
-        <RouterProvider router={router} />
-      </StyleProvider>
-    </ConfigProvider>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <ConfigProvider locale={zhCN}>
+    <StyleProvider transformers={[legacyLogicalPropertiesTransformer]}>
+      <RouterProvider router={router} />
+    </StyleProvider>
+  </ConfigProvider>,
+  // </React.StrictMode>
 );

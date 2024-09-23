@@ -1,10 +1,10 @@
 import { createInitPageData, createInitPageQuery } from "@/shared/utils";
 import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
 // import { devtools, persist } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 
-interface DashboardData {
-  Home: {
+interface ITemplateData {
+  PageTemplate: {
     pageData: {
       dataSource: BASE.PaginationResp<API.User>;
     };
@@ -24,16 +24,18 @@ interface DashboardData {
   };
 }
 
-interface DashboardFunc {
-  updateHome: (draft: (next: DashboardData["Home"]) => void) => void;
+interface IITemplateFunc {
+  updatePageTemplate: (
+    draft: (next: ITemplateData["PageTemplate"]) => void,
+  ) => void;
 }
 
-const useDashboardStore = create<DashboardStore>()(
+const useTemplateStore = create<TemplateStore>()(
   // devtools(
   // persist(
   immer((set, get, api) => {
     return {
-      Home: {
+      PageTemplate: {
         pageData: {
           dataSource: createInitPageData(),
         },
@@ -41,9 +43,7 @@ const useDashboardStore = create<DashboardStore>()(
           isLoading: false,
           showModal: false,
         },
-        pageQuery: {
-          ...createInitPageQuery({ select: undefined }),
-        },
+        pageQuery: { ...createInitPageQuery({ select: undefined }) },
         pageTempData: {
           current: undefined,
           options: [
@@ -52,15 +52,15 @@ const useDashboardStore = create<DashboardStore>()(
           ],
         },
       },
-      updateHome: (fn) => set((draft) => fn(draft.Home)),
+      updatePageTemplate: (fn) => set((draft) => fn(draft.PageTemplate)),
     };
   }),
-  // { name: "useDashboardStore" },
+  // { name: "useTemplateStore" },
   // ),
-  // { name: "useDashboardStore" },
+  // { name: "useTemplateStore" },
   // ),
 );
 
-export type DashboardStore = DashboardData & DashboardFunc;
+export default useTemplateStore;
 
-export default useDashboardStore;
+export type TemplateStore = ITemplateData & IITemplateFunc;

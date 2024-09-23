@@ -1,11 +1,16 @@
 import PageWrapper from "@/components/PageWrapper";
-import { Tag } from "antd";
+import { Button, Tag } from "antd";
+import queryString from "query-string";
+import { pipe } from "ramda";
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface IProps {}
 
 const Login: React.FC<IProps> = (props) => {
+  const navigate = useNavigate();
+  const jump = pipe(queryString.stringifyUrl as any, navigate);
+
   return (
     <PageWrapper>
       <div>
@@ -17,12 +22,17 @@ const Login: React.FC<IProps> = (props) => {
         ))}
       </div>
 
-      <Link to="/dashboard" state={{ from: "login" }}>
-        home
-      </Link>
-      <Link to="/dashboard/todo" state={{ from: "login" }}>
-        todo
-      </Link>
+      <Button
+        type="primary"
+        onClick={() => {
+          jump({
+            url: "/dashboard",
+            query: { from: "login" },
+          });
+        }}
+      >
+        login
+      </Button>
     </PageWrapper>
   );
 };

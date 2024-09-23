@@ -1,21 +1,18 @@
 import SModal from "@/components/SModal";
-import { useDashboardStore, useGlobalStore } from "@/stores";
+import { withGlobalStore, withGlobalStoreProps, withPerformance } from "@/hoc";
+import { pipe } from "ramda";
 import React from "react";
 import { useImmer } from "use-immer";
 
-interface IProps {
+interface IProps extends withGlobalStoreProps {
   open: boolean;
   onOk?: () => void;
   onCancel?: () => void;
+
+  current?: API.User;
 }
 
-const TodoDetail: React.FC<IProps> = (props) => {
-  const { gdb } = useGlobalStore((state) => ({ gdb: state.Global }));
-  const { db, update } = useDashboardStore((state) => ({
-    db: state.Todo,
-    update: state.updateTodo,
-  }));
-
+const HomeModal: React.FC<IProps> = (props) => {
   const [pageData, updatePageData] = useImmer<{}>({});
   const [pageStatus, updatePageStatus] = useImmer<{}>({});
   const [pageTempData, updatePageTempData] = useImmer<{}>({});
@@ -23,22 +20,25 @@ const TodoDetail: React.FC<IProps> = (props) => {
   const handleOk = () => {
     props.onOk && props.onOk();
   };
+
   const handleCancel = () => {
     props.onCancel && props.onCancel();
   };
 
   return (
     <SModal
-      title="TodoDetail"
+      title="HomeModal"
       maskClosable={false}
       keyboard={false}
       open={props.open}
       onOk={handleOk}
       onCancel={handleCancel}
     >
-      TodoDetail
+      HomeModal
     </SModal>
   );
 };
 
-export default TodoDetail;
+const withHOC = pipe(withPerformance, withGlobalStore);
+
+export default withHOC(HomeModal);

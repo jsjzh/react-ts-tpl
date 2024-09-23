@@ -1,18 +1,13 @@
 import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
 // import { devtools, persist } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 
 export interface GlobalData {
-  Global: {
-    pageData: {};
-    pageStatus: {};
-    pageQuery: {};
-    pageTempData: {};
-  };
+  breadcrumbData: { title: string; href?: string; onClick?: () => void }[];
 }
 
 export interface GlobalFunc {
-  updateGlobal: (draft: (next: GlobalData["Global"]) => void) => void;
+  updateGlobal: (draft: (next: GlobalData) => void) => void;
 }
 
 const useGlobalStore = create<GlobalStore>()(
@@ -20,13 +15,8 @@ const useGlobalStore = create<GlobalStore>()(
   // persist(
   immer((set, get, api) => {
     return {
-      Global: {
-        pageData: {},
-        pageStatus: {},
-        pageQuery: {},
-        pageTempData: {},
-      },
-      updateGlobal: (fn) => set((draft) => fn(draft.Global)),
+      breadcrumbData: [],
+      updateGlobal: (fn) => set((draft) => fn(draft)),
     };
   }),
   // { name: "useGlobalStore" },

@@ -1,10 +1,13 @@
-// TODO
-import { useGlobalStore } from "@/stores";
+import { withGlobalStore, withGlobalStoreProps } from "@/hoc";
 import { Breadcrumb } from "antd";
-import { pick } from "ramda";
+import { pipe } from "ramda";
 import React, { useImperativeHandle, useRef } from "react";
 
 interface IProps {
+  style?: React.CSSProperties;
+}
+
+interface IProps extends withGlobalStoreProps {
   style?: React.CSSProperties;
 }
 
@@ -14,14 +17,10 @@ interface PageBreadcrumbIRefs {
   get: () => { title: string; href?: string; onClick?: () => void }[];
 }
 
-const mapStateFromGlobal = pick(["breadcrumbData", "updateGlobal"]);
-
 const PageBreadcrumb = React.forwardRef<PageBreadcrumbIRefs, IProps>(
   (props, ref) => {
-    const global = useGlobalStore(mapStateFromGlobal);
-
     const get = () => {
-      return global.breadcrumbData;
+      return props.gdb.breadcrumbData;
     };
 
     const push = (item: {
@@ -29,22 +28,26 @@ const PageBreadcrumb = React.forwardRef<PageBreadcrumbIRefs, IProps>(
       href?: string;
       onClick?: () => void;
     }) => {
-      const pre = global.breadcrumbData;
+      const pre = props.gdb.breadcrumbData;
       const next = [...pre, { title: item.title, href: item.href }];
-      global.updateGlobal({ breadcrumbData: next });
+      props.gupdate((draft) => {
+        draft.breadcrumbData = next;
+      });
     };
 
     const pop = () => {
-      const pre = global.breadcrumbData;
+      const pre = props.gdb.breadcrumbData;
       const next = pre.slice(0, pre.length - 1);
-      global.updateGlobal({ breadcrumbData: next });
+      props.gupdate((draft) => {
+        draft.breadcrumbData = next;
+      });
     };
 
     useImperativeHandle(ref, () => ({ push, pop, get }), [
-      global.breadcrumbData,
+      props.gdb.breadcrumbData,
     ]);
 
-    return <Breadcrumb style={props.style} items={global.breadcrumbData} />;
+    return <Breadcrumb style={props.style} items={props.gdb.breadcrumbData} />;
   },
 );
 
@@ -71,28 +74,6 @@ export const usePageBreadcrumb = () => {
   };
 };
 
-// export const useGlobalPageBreadcrumb = () => {
-//   const global = useGlobalStore(mapStateFromGlobal);
+const withHOC = pipe(withGlobalStore);
 
-//   return {
-//     data: global.breadcrumbData,
-
-//     update(items: { title: string; href?: string; onClick?: () => void }[]) {
-//       global.updateGlobal({ breadcrumbData: items });
-//     },
-
-//     push(item: { title: string; href?: string; onClick?: () => void }) {
-//       const pre = global.breadcrumbData;
-//       const next = [...pre, item];
-//       global.updateGlobal({ breadcrumbData: next });
-//     },
-
-//     pop() {
-//       const pre = global.breadcrumbData;
-//       const next = pre.slice(0, pre.length - 1);
-//       global.updateGlobal({ breadcrumbData: next });
-//     },
-//   };
-// };
-
-export default PageBreadcrumb;
+export default withHOC(PageBreadcrumb);

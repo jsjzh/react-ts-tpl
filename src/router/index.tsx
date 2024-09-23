@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import { createHashRouter, RouteObject } from "react-router-dom";
 
-import { HomeFilled, ToolFilled } from "@ant-design/icons";
+import { HomeFilled } from "@ant-design/icons";
 
 import LayoutRoot from "@/views/_layouts/Root";
 
@@ -17,7 +17,6 @@ import ErrorBoundary from "@/views/_errors/ErrorBoundary";
 const LazyLogin = lazy(() => import("@/views/Login"));
 
 const LazyHome = lazy(() => import("@/views/dashboard/Home"));
-const LazyTodo = lazy(() => import("@/views/dashboard/todo"));
 
 export const routes: RouteObject[] = [
   {
@@ -34,18 +33,12 @@ export const routes: RouteObject[] = [
       {
         path: "/ex/dashboard",
         element: <LayoutExDashboardContainer />,
-        children: [
-          { index: true, element: <LazyHome /> },
-          { path: "/ex/dashboard/todo", element: <LazyTodo /> },
-        ],
+        children: [{ index: true, element: <LazyHome /> }],
       },
       {
         path: "/dashboard",
         element: <LayoutDashboardContainer />,
-        children: [
-          { index: true, element: <LazyHome /> },
-          { path: "/dashboard/todo", element: <LazyTodo /> },
-        ],
+        children: [{ index: true, element: <LazyHome /> }],
       },
       { path: "/403", element: <Error403 /> },
       { path: "/404", element: <Error404 /> },
@@ -65,7 +58,6 @@ export interface IMenus {
 
 export const dashboardMenus: IMenus[] = [
   { key: "/dashboard", label: "首页", icon: <HomeFilled /> },
-  { key: "/dashboard/todo", label: "待办", icon: <ToolFilled /> },
 ];
 
 export default createHashRouter(routes);
