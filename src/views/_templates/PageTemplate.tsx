@@ -1,6 +1,6 @@
-import SSelectPro from "@/components/forms/baseComponents/SSelectPro";
 import PageWrapper from "@/components/PageWrapper";
 import SRow from "@/components/SRow";
+import { SSelect } from "@/components/forms";
 import {
   withForm,
   withFormProps,
@@ -56,7 +56,7 @@ const PageTemplate: React.FC<IProps> = (props) => {
     <PageWrapper>
       <Form form={props.form} onValuesChange={onValuesChange}>
         <SRow>
-          <SSelectPro
+          <SSelect
             name="select"
             label="下拉选择"
             options={db.pageTempData.options}
