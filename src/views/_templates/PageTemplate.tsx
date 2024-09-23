@@ -1,5 +1,4 @@
 import { appAPI } from "@/api";
-import PageWrapper from "@/components/PageWrapper";
 import SRow from "@/components/SRow";
 import { SSelect } from "@/components/forms";
 import {
@@ -102,7 +101,7 @@ const PageTemplate: React.FC<IProps> = (props) => {
   ];
 
   return (
-    <PageWrapper>
+    <>
       <Form form={props.form} onValuesChange={onValuesChange}>
         <SRow>
           <SSelect name="name" label="name" options={db.pageTempData.options} />
@@ -148,7 +147,7 @@ const PageTemplate: React.FC<IProps> = (props) => {
           }}
         />
       )}
-    </PageWrapper>
+    </>
   );
 };
 

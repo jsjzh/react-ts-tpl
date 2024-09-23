@@ -2,6 +2,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
+import PageWrapper from "@/components/PageWrapper";
 import { dashboardMenus } from "@/router";
 import { path } from "@/shared/treeUtils";
 import { Menu, MenuProps } from "antd";
@@ -69,7 +70,9 @@ const ContentContainer = styled.div`
 
 const Content: React.FC = () => (
   <ContentContainer id="globalContentContainer">
-    <Outlet />
+    <PageWrapper>
+      <Outlet />
+    </PageWrapper>
   </ContentContainer>
 );
 
