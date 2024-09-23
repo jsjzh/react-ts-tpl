@@ -30,6 +30,7 @@ export const routes: RouteObject[] = [
         element: <LayoutBlankContainer />,
         children: [{ index: true, element: <LazyLogin /> }],
       },
+      // 专门外嵌的 path，无 menu
       {
         path: "/ex/dashboard",
         element: <LayoutExDashboardContainer />,
@@ -46,7 +47,6 @@ export const routes: RouteObject[] = [
           { path: "/dashboard/todo", element: <LazyTodo /> },
         ],
       },
-      // TODO 专门外嵌的 path，无 menu
       { path: "/403", element: <Error403 /> },
       { path: "/404", element: <Error404 /> },
       { path: "/500", element: <Error500 /> },

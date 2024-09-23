@@ -1,6 +1,5 @@
-import React from "react";
-import { Row } from "antd";
 import type { RowProps } from "antd";
+import { Row } from "antd";
 
 export interface SRowProps extends RowProps {
   size?: "small" | "middle" | "large";
@@ -44,7 +43,7 @@ const sizeMap = {
   },
 };
 
-const SRow: React.FC<SRowProps> = (props) => {
+export default (props: SRowProps) => {
   const defaultConfig = props.gutter
     ? {}
     : { gutter: sizeMap[props.size || "middle"] };
@@ -55,5 +54,3 @@ const SRow: React.FC<SRowProps> = (props) => {
     </Row>
   );
 };
-
-export default SRow;

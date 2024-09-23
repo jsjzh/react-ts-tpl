@@ -1,13 +1,12 @@
 import SCol from "@/components/SCol";
-import { Form, Input } from "antd";
+import { Form, Select } from "antd";
 import React from "react";
 
 import type { SColProps } from "@/components/SCol";
-import type { ColProps, FormItemProps } from "antd";
+import type { ColProps, FormItemProps, SelectProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
-import { PasswordProps } from "antd/es/input";
 
-export interface ISInputPasswordProps {
+export interface ISSelectProps {
   size?: SColProps["size"];
   span?: number;
   colProps?: ColProps;
@@ -16,17 +15,19 @@ export interface ISInputPasswordProps {
   label?: React.ReactNode;
   formItemProps?: Omit<FormItemProps, "name" | "label">;
 
-  onChange?: PasswordProps["onChange"];
-  componentProps?: Omit<PasswordProps, "onChange">;
+  options?: SelectProps["options"];
+  onChange?: SelectProps["onChange"];
+  componentProps?: Omit<SelectProps, "options" | "onChange">;
 }
 
-const SInputPassword: React.FC<ISInputPasswordProps> = (props) => {
+const SSelect: React.FC<ISSelectProps> = (props) => {
   return (
     <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
       <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
-        <Input.Password
+        <Select
           style={{ width: "100%" }}
           allowClear
+          options={props.options}
           onChange={props.onChange}
           {...props.componentProps}
         />
@@ -35,4 +36,4 @@ const SInputPassword: React.FC<ISInputPasswordProps> = (props) => {
   );
 };
 
-export default SInputPassword;
+export default SSelect;

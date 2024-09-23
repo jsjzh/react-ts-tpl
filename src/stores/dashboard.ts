@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import { devtools, persist } from "zustand/middleware";
+// import { devtools, persist } from "zustand/middleware";
 
 interface DashboardData {
   Home: {

@@ -1,5 +1,5 @@
-import { Popover, Tooltip } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import { Popover } from "antd";
 import { TooltipPlacement } from "antd/es/tooltip";
 import React from "react";
 

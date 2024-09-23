@@ -1,6 +1,5 @@
-import React from "react";
-import { Col } from "antd";
 import type { ColProps } from "antd";
+import { Col } from "antd";
 
 export interface SColProps extends ColProps {
   size?: "small" | "middle" | "large" | "huge";
@@ -53,7 +52,7 @@ const sizeMap = {
   },
 };
 
-const SCol: React.FC<SColProps> = (props) => {
+export default (props: SColProps) => {
   const defaultConfig = props.span ? {} : sizeMap[props.size || "middle"];
 
   return (
@@ -62,5 +61,3 @@ const SCol: React.FC<SColProps> = (props) => {
     </Col>
   );
 };
-
-export default SCol;

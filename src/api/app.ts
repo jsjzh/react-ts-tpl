@@ -1,4 +1,4 @@
-import { createAPI } from "@/shared/API";
+import createAPI from "@/shared/createAPI";
 
 const api = createAPI(import.meta.env.VITE_HOST);
 

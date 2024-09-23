@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import { devtools, persist } from "zustand/middleware";
+// import { devtools, persist } from "zustand/middleware";
 
-interface GlobalData {
+export interface GlobalData {
   Global: {
     pageData: {};
     pageStatus: {};
@@ -11,7 +11,7 @@ interface GlobalData {
   };
 }
 
-interface GlobalFunc {
+export interface GlobalFunc {
   updateGlobal: (draft: (next: GlobalData["Global"]) => void) => void;
 }
 

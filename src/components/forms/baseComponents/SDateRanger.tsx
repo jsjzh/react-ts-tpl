@@ -1,33 +1,39 @@
 import SCol from "@/components/SCol";
-import { Form, Select } from "antd";
+import { DatePicker, Form } from "antd";
 import React from "react";
 
 import type { SColProps } from "@/components/SCol";
-import type { ColProps, FormItemProps, SelectProps } from "antd";
+import type { ColProps, FormItemProps } from "antd";
+import type { RangePickerProps } from "antd/es/date-picker";
 import type { NamePath } from "antd/es/form/interface";
 
-export interface ISSelectProps {
+export interface ISDateRangerProps {
   size?: SColProps["size"];
   span?: number;
-  colProps?: ColProps;
+  colProps?: Omit<ColProps, "size" | "span">;
 
   name: NamePath;
   label?: React.ReactNode;
   formItemProps?: Omit<FormItemProps, "name" | "label">;
 
-  options?: SelectProps["options"];
-  onChange?: SelectProps["onChange"];
-  componentProps?: Omit<SelectProps, "options" | "onChange">;
+  picker?: RangePickerProps["picker"];
+  disabledDate?: RangePickerProps["disabledDate"];
+  onChange?: RangePickerProps["onChange"];
+  componentProps?: Omit<
+    RangePickerProps,
+    "picker" | "disabledDate" | "onChange"
+  >;
 }
 
-const SSelect: React.FC<ISSelectProps> = (props) => {
+const SDateRanger: React.FC<ISDateRangerProps> = (props) => {
   return (
     <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
       <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
-        <Select
+        <DatePicker.RangePicker
           style={{ width: "100%" }}
           allowClear
-          options={props.options}
+          picker={props.picker}
+          disabledDate={props.disabledDate}
           onChange={props.onChange}
           {...props.componentProps}
         />
@@ -36,4 +42,4 @@ const SSelect: React.FC<ISSelectProps> = (props) => {
   );
 };
 
-export default SSelect;
+export default SDateRanger;

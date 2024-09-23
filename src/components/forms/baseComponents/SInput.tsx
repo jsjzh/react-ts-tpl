@@ -1,31 +1,31 @@
 import SCol from "@/components/SCol";
-import { Form, Radio } from "antd";
+import { Form, Input } from "antd";
 import React from "react";
 
 import type { SColProps } from "@/components/SCol";
-import type { ColProps, FormItemProps, RadioGroupProps } from "antd";
+import type { ColProps, FormItemProps, InputProps } from "antd";
 import type { NamePath } from "antd/es/form/interface";
 
-export interface ISRadioGroupProps {
+export interface ISInputProps {
   size?: SColProps["size"];
   span?: number;
-  colProps?: ColProps;
+  colProps?: Omit<ColProps, "size" | "span">;
 
   name: NamePath;
   label?: React.ReactNode;
   formItemProps?: Omit<FormItemProps, "name" | "label">;
 
-  options?: RadioGroupProps["options"];
-  onChange?: RadioGroupProps["onChange"];
-  componentProps?: Omit<RadioGroupProps, "options" | "onChange">;
+  onChange?: InputProps["onChange"];
+  componentProps?: Omit<InputProps, "onChange">;
 }
 
-const SRadioGroup: React.FC<ISRadioGroupProps> = (props) => {
+const SInput: React.FC<ISInputProps> = (props) => {
   return (
     <SCol size={props.size || "middle"} span={props.span} {...props.colProps}>
       <Form.Item name={props.name} label={props.label} {...props.formItemProps}>
-        <Radio.Group
-          options={props.options}
+        <Input
+          style={{ width: "100%" }}
+          allowClear
           onChange={props.onChange}
           {...props.componentProps}
         />
@@ -34,4 +34,4 @@ const SRadioGroup: React.FC<ISRadioGroupProps> = (props) => {
   );
 };
 
-export default SRadioGroup;
+export default SInput;

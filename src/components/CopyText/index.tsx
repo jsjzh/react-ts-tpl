@@ -1,4 +1,3 @@
-import React from "react";
 import { Tooltip, Typography } from "antd";
 
 export default (props: { text: string }) => {

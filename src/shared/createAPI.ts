@@ -34,7 +34,7 @@ type IPromise<T = any> = Promise<T> & {
 type IWindow = typeof window & { [k: string]: any };
 
 // TODO 上传文件，上传大文件
-class API {
+export class API {
   private static jsonpCount = 0;
 
   // response.text()：得到文本字符串。
@@ -390,7 +390,7 @@ class API {
   }
 }
 
-export default API;
-
-export const createAPI = (host: string, config: IAPIConfig = {}) =>
+const createAPI = (host: string, config: IAPIConfig = {}) =>
   new API(host, config);
+
+export default createAPI;
