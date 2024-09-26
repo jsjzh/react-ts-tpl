@@ -62,9 +62,19 @@ export const createInitPageQuery = <T extends { [k: string]: any }>(
     pageNo: 1,
     pageSize: 10,
     ...(values || {}),
-  }) as any;
+  } as any);
 
 export const containerScrollToTop = () => {
   const container = document.getElementById("globalContentContainer");
   container?.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+export const downloadFile = (fileName: string, blob: Blob) => {
+  const aElement = document.createElement("a");
+  const href = URL.createObjectURL(blob);
+  aElement.setAttribute("target", "_blank");
+  aElement.setAttribute("download", fileName);
+  aElement.setAttribute("href", href);
+  aElement.click();
+  URL.revokeObjectURL(href);
 };

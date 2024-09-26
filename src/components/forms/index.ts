@@ -12,7 +12,9 @@ import SInputNumberRanger, {
 import SInputPassword, {
   ISInputPasswordProps,
 } from "./baseComponents/SInputPassword";
+import SPage, { ISPageProps } from "./baseComponents/SPage";
 import SRadioGroup, { ISRadioGroupProps } from "./baseComponents/SRadioGroup";
+import SSWitch, { ISSWitchProps } from "./baseComponents/SSWitch";
 import SSelect, { ISSelectProps } from "./baseComponents/SSelect";
 import SSelectMultiple, {
   ISSelectMultipleProps,
@@ -23,7 +25,6 @@ import SSelectSearch, {
 import SSelectSearchMultiple, {
   ISSelectSearchMultipleProps,
 } from "./baseComponents/SSelectSearchMultiple";
-import SSWitch, { ISSWitchProps } from "./baseComponents/SSWitch";
 import STableFilterDropdown, {
   ISTableFilterDropdownProps,
 } from "./baseComponents/STableFilterDropdown";
@@ -43,17 +44,18 @@ export {
   SInputNumber,
   SInputNumberRanger,
   SInputPassword,
+  SPage,
   SRadioGroup,
+  SSWitch,
   SSelect,
   SSelectMultiple,
   SSelectSearch,
   SSelectSearchMultiple,
-  SSWitch,
   STableFilterDropdown,
   STextArea,
   STimePicker,
   STreeSelect,
-  STreeSelectSearch,
+  STreeSelectSearch
 };
 export type {
   ISCheckboxProps,
@@ -64,15 +66,17 @@ export type {
   ISInputNumberRangerProps,
   ISInputPasswordProps,
   ISInputProps,
+  ISPageProps,
   ISRadioGroupProps,
+  ISSWitchProps,
   ISSelectMultipleProps,
   ISSelectProps,
   ISSelectSearchMultipleProps,
   ISSelectSearchProps,
-  ISSWitchProps,
   ISTableFilterDropdownProps,
   ISTextAreaProps,
   ISTimePickerProps,
   ISTreeSelectProps,
-  ISTreeSelectSearchProps,
+  ISTreeSelectSearchProps
 };
+

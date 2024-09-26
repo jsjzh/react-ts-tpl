@@ -44,13 +44,13 @@ export class API {
   // Service Worker
   // response.formData()：得到 FormData 表单对象。
 
-  public static handleJson(response: Response) {
+  public static async handleJson(response: Response) {
     if (response.redirected) {
       location.href = response.url;
     }
 
     try {
-      return response.json();
+      return await response.json();
     } catch (error) {
       throw new APIError(`[解析失败] ${response.url}`);
     }
@@ -103,8 +103,8 @@ export class API {
   public hostURL: URL;
   public baseConfig: IAPIConfig;
 
-  public constructor(host: string, config: IAPIConfig) {
-    this.hostURL = new URL(host);
+  public constructor(host: string | URL, config: IAPIConfig) {
+    this.hostURL = host instanceof URL ? host : new URL(host);
     this.baseConfig = config;
   }
 
@@ -398,7 +398,7 @@ export class API {
   }
 }
 
-const createAPI = (host: string, config: IAPIConfig = {}) =>
+const createAPI = (host: string | URL, config: IAPIConfig = {}) =>
   new API(host, config);
 
 export default createAPI;

@@ -7,14 +7,18 @@ export interface withGlobalStoreProps {
   gupdate: GlobalFunc["updateGlobal"];
 }
 
-function withGlobalStore<T>(WrappedComponent: React.FC<T>) {
-  return function withGlobalStoreComponent(props: any) {
+function withGlobalStore<T extends withGlobalStoreProps>(
+  WrappedComponent: React.ComponentType<T>,
+) {
+  return function withGlobalStoreComponent(
+    props: Omit<T, keyof withGlobalStoreProps>,
+  ) {
     const { gdb, gupdate } = useGlobalStore((state) => ({
       gdb: state,
       gupdate: state.updateGlobal,
     }));
 
-    return <WrappedComponent gdb={gdb} gupdate={gupdate} {...props} />;
+    return <WrappedComponent gdb={gdb} gupdate={gupdate} {...(props as any)} />;
   };
 }
 

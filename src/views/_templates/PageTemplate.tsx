@@ -1,6 +1,7 @@
 import { appAPI } from "@/api";
+import SCol from "@/components/SCol";
 import SRow from "@/components/SRow";
-import { SSelect } from "@/components/forms";
+import { SPage, SSelect } from "@/components/forms";
 import {
   withForm,
   withFormProps,
@@ -10,8 +11,7 @@ import {
 } from "@/hoc";
 import { createInitPageData } from "@/shared/utils";
 import { useTemplateStore } from "@/stores";
-import { useDebounceFn } from "ahooks";
-import { Button, Form, Table } from "antd";
+import { Button, Form, Space, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { pipe } from "ramda";
 import React, { useEffect } from "react";
@@ -24,7 +24,7 @@ interface IForms {
   pageSize: number;
 }
 
-interface IProps extends withGlobalStoreProps, withFormProps<IForms> {}
+interface IProps extends OProps, withGlobalStoreProps, withFormProps<IForms> {}
 
 const PageTemplate: React.FC<IProps> = (props) => {
   const { db, update } = useTemplateStore((state) => ({
@@ -65,14 +65,6 @@ const PageTemplate: React.FC<IProps> = (props) => {
       });
   };
 
-  const _onValuesChange = (_: Partial<IForms>, values: IForms) => {
-    fetchPageData();
-  };
-
-  const { run: onValuesChange } = useDebounceFn(_onValuesChange, {
-    wait: 300,
-  });
-
   useEffect(() => {
     props.form.setFieldsValue(db.pageQuery);
     fetchPageData();
@@ -102,9 +94,21 @@ const PageTemplate: React.FC<IProps> = (props) => {
 
   return (
     <>
-      <Form form={props.form} onValuesChange={onValuesChange}>
+      <Form form={props.form} onFinish={fetchPageData}>
         <SRow>
           <SSelect name="name" label="name" options={db.pageTempData.options} />
+          <SPage />
+        </SRow>
+
+        <SRow>
+          <SCol style={{ textAlign: "right" }} span={24}>
+            <Space>
+              <Button htmlType="reset">重置</Button>
+              <Button htmlType="submit" type="primary">
+                查询
+              </Button>
+            </Space>
+          </SCol>
         </SRow>
       </Form>
 
@@ -151,6 +155,8 @@ const PageTemplate: React.FC<IProps> = (props) => {
   );
 };
 
+interface OProps {}
+
 const withHOC = pipe(withPerformance, withGlobalStore, withForm);
 
-export default withHOC(PageTemplate);
+export default withHOC(PageTemplate) as any as React.FC<OProps>;
