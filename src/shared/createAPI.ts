@@ -2,6 +2,18 @@ import { notification } from "antd";
 import queryString from "query-string";
 import ExtendableError from "./error";
 
+type AnyObject = Record<string | number, any>;
+
+type IPromise<T = AnyObject> = Promise<T> & {
+  cancel: () => void;
+};
+
+type IWindow = typeof window & AnyObject;
+
+type BlobReq = AnyObject & { files: Record<string, File> };
+
+type BlobResp = { blob: Blob; filename: string };
+
 class APIError extends ExtendableError {
   public constructor(message = "") {
     super(message);
@@ -27,13 +39,8 @@ interface IJsonpConfig {
   timeout?: number;
 }
 
-type IPromise<T = any> = Promise<T> & {
-  cancel: () => void;
-};
-
-type IWindow = typeof window & { [k: string]: any };
-
-// TODO 上传文件，上传大文件
+// TODO 上传大文件，一般会做分片上传
+// 但这需要和后端协商，定一个上传协议
 export class API {
   private static jsonpCount = 0;
 
@@ -96,8 +103,12 @@ export class API {
     return response.json();
   }
 
-  public static handleData(data: any) {
+  public static handleJsonData(data: any) {
     return data.data;
+  }
+
+  public static handleBlobData(blob: any) {
+    return blob;
   }
 
   public hostURL: URL;
@@ -108,34 +119,109 @@ export class API {
     this.baseConfig = config;
   }
 
-  public getJson<T = any>(
+  public getJson<T = AnyObject>(
     endpoint: string,
-    data: Record<string | number, any> = {},
+    data: AnyObject = {},
     config: IAPIConfig = {},
   ) {
-    return this.request<T>(this.formatEndpoint(endpoint, data), {
-      method: "get",
-      handleOk: API.handleJson,
-      ...config,
-    });
+    return this.getJsonForJson<T>(endpoint, data, config);
+  }
+  public postJson<T = AnyObject>(
+    endpoint: string,
+    data: AnyObject = {},
+    config: IAPIConfig = {},
+  ) {
+    return this.postJsonForJson<T>(endpoint, data, config);
+  }
+  public putJson<T = AnyObject>(
+    endpoint: string,
+    data: AnyObject = {},
+    config: IAPIConfig = {},
+  ) {
+    return this.putJsonForJson<T>(endpoint, data, config);
+  }
+  public deleteJson<T = AnyObject>(
+    endpoint: string,
+    data: AnyObject = {},
+    config: IAPIConfig = {},
+  ) {
+    return this.deleteJsonForJson<T>(endpoint, data, config);
+  }
+  public getBlob<T = BlobResp>(
+    endpoint: string,
+    data: AnyObject = {},
+    config: IAPIConfig = {},
+  ) {
+    return this.getJsonForBlob<T>(endpoint, data, config);
+  }
+  public postBlob<T = BlobResp>(
+    endpoint: string,
+    data: AnyObject = {},
+    config: IAPIConfig = {},
+  ) {
+    return this.postJsonForBlob<T>(endpoint, data, config);
+  }
+  public uploadBlob<T = AnyObject>(
+    endpoint: string,
+    data: BlobReq,
+    method: "post" | "put" | "patch" | "delete" = "post",
+    config: IAPIConfig = {},
+  ) {
+    return method === "put"
+      ? this.putBlobForJson<T>(endpoint, data, config)
+      : method === "patch"
+      ? this.patchBlobForJson<T>(endpoint, data, config)
+      : method === "delete"
+      ? this.deleteBlobForJson<T>(endpoint, data, config)
+      : method === "post"
+      ? this.postBlobForJson<T>(endpoint, data, config)
+      : this.postBlobForJson<T>(endpoint, data, config);
   }
 
-  public headJson<T = { [k: string]: string }>(
+  public headJsonForJson<T = AnyObject>(
     endpoint: string,
-    data: Record<string | number, any> = {},
+    data: AnyObject = {},
     config: IAPIConfig = {},
   ) {
     return this.request<T>(this.formatEndpoint(endpoint, data), {
       method: "head",
       handleOk: API.handleHead,
+      handleNotOk: API.handleStatus,
       handleData: (header) => header,
       ...config,
     });
   }
 
-  public postJson<T = any>(
+  public getJsonForJson<T = AnyObject>(
     endpoint: string,
-    data: Record<string | number, any> = {},
+    data: AnyObject = {},
+    config: IAPIConfig = {},
+  ) {
+    return this.request<T>(this.formatEndpoint(endpoint, data), {
+      method: "get",
+      handleOk: API.handleJson,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleJsonData,
+      ...config,
+    });
+  }
+  public getJsonForBlob<T = BlobResp>(
+    endpoint: string,
+    data: AnyObject = {},
+    config: IAPIConfig = {},
+  ) {
+    return this.request<T>(this.formatEndpoint(endpoint, data), {
+      method: "get",
+      handleOk: API.handleBlob,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleBlobData,
+      ...config,
+    });
+  }
+
+  public postJsonForJson<T = AnyObject>(
+    endpoint: string,
+    data: AnyObject = {},
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
@@ -145,13 +231,84 @@ export class API {
       headers,
       body: JSON.stringify(data),
       handleOk: API.handleJson,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleJsonData,
+      ...config,
+    });
+  }
+  public postJsonForBlob<T = BlobResp>(
+    endpoint: string,
+    data: AnyObject = {},
+    config: IAPIConfig = {},
+  ) {
+    const headers = new Headers();
+    headers.append("content-type", "application/json;charset=utf-8");
+    return this.request<T>(endpoint, {
+      method: "post",
+      headers,
+      body: JSON.stringify(data),
+      handleOk: API.handleBlob,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleBlobData,
+      ...config,
+    });
+  }
+  public postBlobForJson<T = AnyObject>(
+    endpoint: string,
+    data: BlobReq,
+    config: IAPIConfig = {},
+  ) {
+    const fd = new FormData();
+
+    Object.keys(data).forEach((key) => {
+      if (key === "files") {
+        Object.keys(data.files).forEach((key) =>
+          fd.append(key, data.files[key], data.files[key].name),
+        );
+      } else {
+        fd.append(key, data[key]);
+      }
+    });
+
+    return this.request<T>(endpoint, {
+      method: "post",
+      body: fd,
+      handleOk: API.handleJson,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleJsonData,
+      ...config,
+    });
+  }
+  public postBlobForBlob<T = BlobResp>(
+    endpoint: string,
+    data: BlobReq,
+    config: IAPIConfig = {},
+  ) {
+    const fd = new FormData();
+
+    Object.keys(data).forEach((key) => {
+      if (key === "files") {
+        Object.keys(data.files).forEach((key) =>
+          fd.append(key, data.files[key], data.files[key].name),
+        );
+      } else {
+        fd.append(key, data[key]);
+      }
+    });
+
+    return this.request<T>(endpoint, {
+      method: "post",
+      body: fd,
+      handleOk: API.handleBlob,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleBlobData,
       ...config,
     });
   }
 
-  public putJson<T = any>(
+  public putJsonForJson<T = AnyObject>(
     endpoint: string,
-    data: Record<string | number, any> = {},
+    data: AnyObject = {},
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
@@ -161,13 +318,84 @@ export class API {
       headers,
       body: JSON.stringify(data),
       handleOk: API.handleJson,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleJsonData,
+      ...config,
+    });
+  }
+  public putJsonForBlob<T = BlobResp>(
+    endpoint: string,
+    data: AnyObject = {},
+    config: IAPIConfig = {},
+  ) {
+    const headers = new Headers();
+    headers.append("content-type", "application/json;charset=utf-8");
+    return this.request<T>(endpoint, {
+      method: "put",
+      headers,
+      body: JSON.stringify(data),
+      handleOk: API.handleBlob,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleBlobData,
+      ...config,
+    });
+  }
+  public putBlobForJson<T = AnyObject>(
+    endpoint: string,
+    data: BlobReq,
+    config: IAPIConfig = {},
+  ) {
+    const fd = new FormData();
+
+    Object.keys(data).forEach((key) => {
+      if (key === "files") {
+        Object.keys(data.files).forEach((key) =>
+          fd.append(key, data.files[key], data.files[key].name),
+        );
+      } else {
+        fd.append(key, data[key]);
+      }
+    });
+
+    return this.request<T>(endpoint, {
+      method: "put",
+      body: fd,
+      handleOk: API.handleJson,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleJsonData,
+      ...config,
+    });
+  }
+  public putBlobForBlob<T = BlobResp>(
+    endpoint: string,
+    data: BlobReq,
+    config: IAPIConfig = {},
+  ) {
+    const fd = new FormData();
+
+    Object.keys(data).forEach((key) => {
+      if (key === "files") {
+        Object.keys(data.files).forEach((key) =>
+          fd.append(key, data.files[key], data.files[key].name),
+        );
+      } else {
+        fd.append(key, data[key]);
+      }
+    });
+
+    return this.request<T>(endpoint, {
+      method: "put",
+      body: fd,
+      handleOk: API.handleBlob,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleBlobData,
       ...config,
     });
   }
 
-  public patchJson<T = any>(
+  public patchJsonForJson<T = AnyObject>(
     endpoint: string,
-    data: Record<string | number, any> = {},
+    data: AnyObject = {},
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
@@ -177,13 +405,84 @@ export class API {
       headers,
       body: JSON.stringify(data),
       handleOk: API.handleJson,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleJsonData,
+      ...config,
+    });
+  }
+  public patchJsonForBlob<T = BlobResp>(
+    endpoint: string,
+    data: AnyObject = {},
+    config: IAPIConfig = {},
+  ) {
+    const headers = new Headers();
+    headers.append("content-type", "application/json;charset=utf-8");
+    return this.request<T>(endpoint, {
+      method: "patch",
+      headers,
+      body: JSON.stringify(data),
+      handleOk: API.handleBlob,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleBlobData,
+      ...config,
+    });
+  }
+  public patchBlobForJson<T = AnyObject>(
+    endpoint: string,
+    data: BlobReq,
+    config: IAPIConfig = {},
+  ) {
+    const fd = new FormData();
+
+    Object.keys(data).forEach((key) => {
+      if (key === "files") {
+        Object.keys(data.files).forEach((key) =>
+          fd.append(key, data.files[key], data.files[key].name),
+        );
+      } else {
+        fd.append(key, data[key]);
+      }
+    });
+
+    return this.request<T>(endpoint, {
+      method: "patch",
+      body: fd,
+      handleOk: API.handleJson,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleJsonData,
+      ...config,
+    });
+  }
+  public patchBlobForBlob<T = BlobResp>(
+    endpoint: string,
+    data: BlobReq,
+    config: IAPIConfig = {},
+  ) {
+    const fd = new FormData();
+
+    Object.keys(data).forEach((key) => {
+      if (key === "files") {
+        Object.keys(data.files).forEach((key) =>
+          fd.append(key, data.files[key], data.files[key].name),
+        );
+      } else {
+        fd.append(key, data[key]);
+      }
+    });
+
+    return this.request<T>(endpoint, {
+      method: "patch",
+      body: fd,
+      handleOk: API.handleBlob,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleBlobData,
       ...config,
     });
   }
 
-  public deleteJson<T = any>(
+  public deleteJsonForJson<T = AnyObject>(
     endpoint: string,
-    data: Record<string | number, any> = {},
+    data: AnyObject = {},
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
@@ -193,26 +492,14 @@ export class API {
       headers,
       body: JSON.stringify(data),
       handleOk: API.handleJson,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleJsonData,
       ...config,
     });
   }
-
-  public getBlob<T = { blob: Blob; filename: string }>(
+  public deleteJsonForBlob<T = BlobResp>(
     endpoint: string,
-    data: Record<string | number, any> = {},
-    config: IAPIConfig = {},
-  ) {
-    return this.request<T>(this.formatEndpoint(endpoint, data), {
-      method: "get",
-      handleOk: API.handleBlob,
-      handleData: (blob) => blob,
-      ...config,
-    });
-  }
-
-  public postBlob<T = { blob: Blob; filename: string }>(
-    endpoint: string,
-    data: Record<string | number, any> = {},
+    data: AnyObject = {},
     config: IAPIConfig = {},
   ) {
     const headers = new Headers();
@@ -222,56 +509,70 @@ export class API {
       headers,
       body: JSON.stringify(data),
       handleOk: API.handleBlob,
-      handleData: (blob) => blob,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleBlobData,
       ...config,
     });
   }
-
-  public postForm<T = any>(
+  public deleteBlobForJson<T = AnyObject>(
     endpoint: string,
-    data: FormData,
+    data: BlobReq,
     config: IAPIConfig = {},
   ) {
+    const fd = new FormData();
+
+    Object.keys(data).forEach((key) => {
+      if (key === "files") {
+        Object.keys(data.files).forEach((key) =>
+          fd.append(key, data.files[key], data.files[key].name),
+        );
+      } else {
+        fd.append(key, data[key]);
+      }
+    });
+
     return this.request<T>(endpoint, {
-      method: "post",
-      body: data,
+      method: "delete",
+      body: fd,
       handleOk: API.handleJson,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleJsonData,
       ...config,
     });
   }
-
-  public putForm<T = any>(
+  public deleteBlobForBlob<T = BlobResp>(
     endpoint: string,
-    data: FormData,
+    data: BlobReq,
     config: IAPIConfig = {},
   ) {
+    const fd = new FormData();
+
+    Object.keys(data).forEach((key) => {
+      if (key === "files") {
+        Object.keys(data.files).forEach((key) =>
+          fd.append(key, data.files[key], data.files[key].name),
+        );
+      } else {
+        fd.append(key, data[key]);
+      }
+    });
+
     return this.request<T>(endpoint, {
-      method: "put",
-      body: data,
-      handleOk: API.handleJson,
+      method: "delete",
+      body: fd,
+      handleOk: API.handleBlob,
+      handleNotOk: API.handleStatus,
+      handleData: API.handleBlobData,
       ...config,
     });
   }
 
-  public patchForm<T = any>(
-    endpoint: string,
-    data: FormData,
-    config: IAPIConfig = {},
-  ) {
-    return this.request<T>(endpoint, {
-      method: "patch",
-      body: data,
-      handleOk: API.handleJson,
-      ...config,
-    });
-  }
-
-  public jsonp<T = any>(
+  public jsonp<T = AnyObject>(
     endpoint: string,
     data: Record<string | number, any> = {},
     config: IJsonpConfig = {},
   ) {
-    const { showNotification = true, handleData = API.handleData } =
+    const { showNotification = true, handleData = API.handleJsonData } =
       this.baseConfig;
 
     const prefix = config.prefix || "__jp__";
@@ -282,7 +583,7 @@ export class API {
     _url.searchParams.append(param, id);
     const url = _url.toString();
 
-    const timeout = config.timeout ? config.timeout : 60000;
+    const timeout = config.timeout ? config.timeout : 30000;
     let timer: number;
 
     const _window: IWindow = window;
@@ -335,7 +636,7 @@ export class API {
 
     promise.cancel = () => {
       cleanup();
-      controller.abort("取消请求");
+      controller.abort("[取消请求]");
     };
 
     return promise as IPromise<T>;
@@ -349,12 +650,12 @@ export class API {
       showNotification = true,
       handleOk = API.handleJson,
       handleNotOk = API.handleStatus,
-      handleData = API.handleData,
+      handleData = API.handleJsonData,
+      timeout = 30000,
       ...currentConfig
     } = {
       ...this.baseConfig,
       ...config,
-      ...controller,
     };
 
     const promise: any = fetch(url, {
@@ -362,6 +663,7 @@ export class API {
       credentials: "include",
       cache: "no-cache",
       keepalive: true,
+      signal: controller.signal,
       ...currentConfig,
     })
       .then((response) => {
@@ -377,8 +679,13 @@ export class API {
         throw new APIError(`${reason || "未知"}`);
       });
 
+    const id = setTimeout(() => {
+      controller.abort("[请求超时]");
+      clearTimeout(id);
+    }, timeout);
+
     promise.cancel = () => {
-      controller.abort("取消请求");
+      controller.abort("[取消请求]");
     };
 
     return promise as IPromise<T>;
